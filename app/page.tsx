@@ -1,4 +1,7 @@
+"use client";
 import Link from 'next/link';
+import { useState } from "react";
+import Modal from "components/modals/modal";
 interface FeatureCardProps {
   icon: JSX.Element;
   title: string;
@@ -33,6 +36,7 @@ const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
 };
 
 const CharityCard = ({ name, description, received, organizations }: CharityCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 flex flex-col justify-between">
       <div>
@@ -80,9 +84,18 @@ const CharityCard = ({ name, description, received, organizations }: CharityCard
           </button>
         </Link>
 
-        <button className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300 flex-1">
+        <button onClick={() => setIsModalOpen(true)} className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300 flex-1">
           Donate Now
         </button>
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Donate Now"
+        >
+          <p>This is your modal content.</p>
+        </Modal>
+
       </div>
     </div>
   );
@@ -107,6 +120,7 @@ const TestimonialCard = ({ quote, author, title, imageSrc }: TestimonialProps) =
 
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const features = [
     {
       title: "100% Transparent",
@@ -225,9 +239,13 @@ export default function Home() {
             Track every donation in real-time. See exactly where your money goes and the impact you are making across 10 trusted charity organizations.
           </p>
           <div className="flex justify-center space-x-4">
-            <button className="bg-blue-600 text-white font-bold py-4 px-12 rounded-full text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300">
+            <button onClick={() => setIsModalOpen(true)} className="bg-blue-600 text-white font-bold py-4 px-12 rounded-full text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300">
               Start Donating
             </button>
+
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title='Start Donating'>
+              <p>This is your modal DONATE.</p>
+            </Modal>
 
           </div>
         </section>
