@@ -11,7 +11,7 @@ type Charity = {
 };
 
 const charitiesData: Record<
-  "unicef" | "red-cross" | "doctors-without-borders-(msf)",
+  "unicef" | "red-cross" | "doctors-without-borders-(msf)"|"world-wildlife-fund-(wwf)"| "salvation-army" | "oxfam",
   Charity
 > = {
   unicef: {
@@ -43,6 +43,36 @@ const charitiesData: Record<
       "Doctors Without Borders/Médecins Sans Frontières (MSF) is an international, independent...",
     image:
       "https://placehold.co/800x400/cccccc/000000?text=Doctors+Without+Borders",
+  },
+   "world-wildlife-fund-(wwf)": {
+    name: "World Wildlife Fund (WWF)",
+    description: "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
+    totalReceived: "$0",
+    organizations: ["MWWF US", "WWF US"],
+    fullDescription:
+      "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
+    image:
+      "https://placehold.co/800x400/cccccc/000000?text=World+Wildlife+Fund",
+  },
+     "salvation-army": {
+    name: "Salvation Army",
+    description: "International charitable organization providing relief, rehabilitation, and community support.",
+    totalReceived: "$0",
+    organizations: ["The Salvation Army USA", "The Salvation Army USA"],
+    fullDescription:
+      "International charitable organization providing relief, rehabilitation, and community support.",
+    image:
+      "https://placehold.co/800x400/cccccc/000000?text=Salvation+Army",
+  },
+       "oxfam": {
+    name: "Oxfam",
+    description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, and development.",
+    totalReceived: "$0",
+    organizations: ["ThOxfam America", "TOxfam America"],
+    fullDescription:
+      "Global movement to end the injustice of poverty through humanitarian aid, advocacy, and development.",
+    image:
+      "https://placehold.co/800x400/cccccc/000000?text=Oxfam",
   },
 };
 
