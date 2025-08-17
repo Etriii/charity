@@ -70,7 +70,7 @@ const CharityCard = ({ name, description, received, organizations }: CharityCard
       <div className="flex gap-2 mt-6 pt-4 border-t border-gray-200">
 
         <Link
-          href={`/charity/charity_profile?name=${encodeURIComponent(
+          href={`/charity/charity_profile/${encodeURIComponent(
             name.toLowerCase().replace(/ /g, "-")
           )}`}
           className="text-blue-600 font-semibold text-sm hover:underline flex-1"
@@ -79,6 +79,7 @@ const CharityCard = ({ name, description, received, organizations }: CharityCard
             View Profile
           </button>
         </Link>
+
         <button className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300 flex-1">
           Donate Now
         </button>
@@ -214,7 +215,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="container mx-auto pt-24 px-8">
-    
+
         {/* Hero Section */}
         <section className="text-center mb-16 mt-16">
           <h1 className="text-5xl font-extrabold tracking-tight mb-4">
@@ -227,7 +228,7 @@ export default function Home() {
             <button className="bg-blue-600 text-white font-bold py-4 px-12 rounded-full text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300">
               Start Donating
             </button>
-          
+
           </div>
         </section>
 
