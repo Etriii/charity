@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 import Image from "next/image";
 import { Calendar, MapPin, Tag, DollarSign } from "lucide-react";
@@ -38,8 +41,8 @@ const charitiesData: Record<string, Charity> = {
     organizations: ["UNICEF USA", "UNICEF Philippines"],
     fullDescription:
       "UNICEF, the United Nations Children's Fund, works in the world's toughest places. United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
-    image: "/images/UNICEF.png",
-    profile_image: "/images/UNICEFBG.jpg",
+    image: "/images/UNICEFBG.jpg",
+    profile_image: "/images/UNICEF.png",
     established: "1946",
     category: "Children & Education",
     location: "Global",
@@ -151,18 +154,31 @@ interface PageProps {
 export default function CharityPage({ params }: PageProps) {
   const key = params.name.toLowerCase() as keyof typeof charitiesData;
   const charity = charitiesData[key];
+  const router = useRouter();
 
   if (!charity) {
     return notFound();
   }
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.back(); // go to previous page
+    } else {
+      router.push("/loggedin"); // fallback route
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
       {/* Header */}
       <header className="bg-white shadow-sm py-4 px-8 border-b border-gray-200">
         <div className="container mx-auto flex items-center">
-          <Link href="/loggedin" className="text-blue-600 hover:underline">
+          <button
+            onClick={handleBack}
+            className="text-blue-600 hover:underline flex items-center gap-1"
+          >
             &larr; Back
-          </Link>
+          </button>
           <span className="ml-auto text-xl font-bold">{charity.name}</span>
         </div>
       </header>
