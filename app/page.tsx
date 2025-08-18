@@ -6,8 +6,9 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Modal from '@/components/Modal';
 import DonationAuthContent from '@/components/DonationAuthContent';
-import HomePage from '@/components/HomePage';
+import HomePage from '../components/HomePage';
 import ProfilePage from '@/components/ProfilePage';
+import LoggedInHomePage from '../components/LoggedInHomePage';
 import MessageDisplay from '@/components/MessageDisplay';
 import { Message } from '@/types';
 
@@ -36,7 +37,11 @@ export default function App() {
       <MessageDisplay message={mainMessage} />
 
       {isLoggedIn ? (
-        <ProfilePage />
+        <LoggedInHomePage 
+          setIsModalOpen={setIsModalOpen} 
+          setMainMessage={setMainMessage} 
+          userName="Micah"
+        />
       ) : (
         <HomePage 
           setIsModalOpen={setIsModalOpen} 

@@ -10,7 +10,6 @@ const CharityCard: React.FC<CharityCardProps> = ({
   setMainMessage,
 }) => {
   const handleViewProfile = () => {
-    setMainMessage({ type: 'info', text: `Viewing profile for ${name}` });
     setTimeout(() => setMainMessage(null), 3000);
   };
 
