@@ -184,9 +184,9 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
                                 <Link
                                     href={{
                                         pathname: "/charity/charity_profile/[name]",
-                                        query: { name: charity.name },
+                                        query: { name: charity.name.replace(/\s+/g, "-") },
                                     }}
-                                    as={`/charity/charity_profile/${encodeURIComponent(charity.name)}`}
+                                    as={`/charity/charity_profile/${charity.name.replace(/\s+/g, "-")}`}
                                     className="flex-1 bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center"
                                 >
                                     View Profile
