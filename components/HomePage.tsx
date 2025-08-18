@@ -97,7 +97,7 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen  }) => {
         <div className="flex justify-center space-x-4">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-blue-600 text-white font-bold py-4 px-12 rounded-full text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
+            className="bg-blue-600 text-white font-bold py-4 px-12 rounded-lg text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
           >
             Start Donating
           </button>

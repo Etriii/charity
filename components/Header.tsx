@@ -3,6 +3,12 @@ import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/solid';
 import { HeaderProps } from '../types';
 
 const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal }) => {
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm py-4 px-8 border-b border-gray-200">
       <div className="container mx-auto flex justify-between items-center">
@@ -15,8 +21,8 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal }) =>
         </div>
         {isLoggedIn ? (
           <button
-            onClick={onLogout}
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-red-600 transition-colors duration-300 flex items-center space-x-2"
+            onClick={handleLogout} 
+            className="bg-red-500 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-red-600 transition-colors duration-300 flex items-center space-x-2"
           >
             <ArrowRightOnRectangleIcon className="h-5 w-5" />
             <span>Log Out</span>
@@ -24,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal }) =>
         ) : (
           <button
             onClick={onOpenModal}
-            className="bg-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300"
+            className="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
           >
             Create Account
           </button>
