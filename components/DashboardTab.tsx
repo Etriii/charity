@@ -90,7 +90,7 @@ const DashboardTab = () => {
   const renderStatistics = () => (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Donation Breakdown */}
+        {/* donation */}
         <div className="bg-gray-50 rounded-xl p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">Donation Breakdown</h4>
           <div className="space-y-4">
@@ -148,7 +148,7 @@ const DashboardTab = () => {
           </div>
         </div>
 
-        {/* Top Charities */}
+        {/* top charities */}
         <div className="bg-gray-50 rounded-xl p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">Top Charities</h4>
           <div className="space-y-4">
@@ -165,7 +165,7 @@ const DashboardTab = () => {
         </div>
       </div>
 
-      {/* Donation Timeline */}
+      {/* timeline */}
       <div className="bg-gray-50 rounded-xl p-6">
         <h4 className="text-lg font-semibold text-gray-800 mb-4">Donation Timeline</h4>
         <div className="flex items-center justify-center h-32 text-gray-500">
@@ -178,7 +178,7 @@ const DashboardTab = () => {
 
   const renderYourImpact = () => (
     <div className="space-y-6">
-      {/* Impact Summary */}
+      {/* impact */}
       <div className="text-center bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
           <ArrowTrendingUpIcon className="h-8 w-8 text-green-600" />
@@ -189,7 +189,7 @@ const DashboardTab = () => {
         </p>
       </div>
 
-      {/* Organizations Supported */}
+      {/* org supported */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h4 className="text-lg font-semibold text-gray-800 mb-4">Organizations You have Supported</h4>
         <div className="space-y-4">
@@ -215,7 +215,7 @@ const DashboardTab = () => {
         </div>
       </div>
 
-      {/* Transparency Note */}
+      {/* transparency */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
         <div className="flex items-start space-x-3">
           <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center mt-0.5">
@@ -236,7 +236,7 @@ const DashboardTab = () => {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Section */}
+      {/* welcome */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8">
         <div className="flex justify-between items-start mb-6">
           <div>
@@ -299,7 +299,7 @@ const DashboardTab = () => {
         </div>
       </div>
 
-      {/* Main Content with Tabs */}
+      {/* main w/ tabs */}
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-200">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-2xl font-bold text-gray-800">
@@ -341,7 +341,7 @@ const DashboardTab = () => {
           </div>
         </div>
         
-        {/* Tab Content */}
+        {/* tab content */}
         {activeTab === 'history' && renderDonationHistory()}
         {activeTab === 'statistics' && renderStatistics()}
         {activeTab === 'impact' && renderYourImpact()}
