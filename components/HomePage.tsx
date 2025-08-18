@@ -5,7 +5,7 @@ import CharityCard from './CharityCard';
 import TestimonialCard from './TestimonialCard';
 import { HomePageProps } from '../types';
 
-const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage  }) => {
+const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen  }) => {
   const features = [
     {
       title: "100% Transparent",
@@ -84,6 +84,7 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage  }) 
     },
   ];
 
+  
   return (
     <main className="container mx-auto pt-24 px-8">
       <section className="text-center mb-16 mt-16">
@@ -113,7 +114,7 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage  }) 
         <h2 className="text-3xl font-bold text-center mb-12">Live Charity Statistics</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {charities.map((charity, index) => (
-            <CharityCard key={index} {...charity} setIsModalOpen={setIsModalOpen} setMainMessage={setMainMessage} />
+            <CharityCard key={index} {...charity} setIsModalOpen={setIsModalOpen} />
           ))}
         </div>
       </section>

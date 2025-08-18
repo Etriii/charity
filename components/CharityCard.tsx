@@ -8,7 +8,6 @@ type CharityCardProps = {
   received: number;
   organizations: string[];
   setIsModalOpen: (value: boolean) => void;
-  setMainMessage: (message: string) => void;
 };
 
 const CharityCard: React.FC<CharityCardProps> = ({
@@ -17,7 +16,6 @@ const CharityCard: React.FC<CharityCardProps> = ({
   received,
   organizations,
   setIsModalOpen,
-  setMainMessage,
 }) => {
   const handleDonateNow = () => {
     setIsModalOpen(true);
