@@ -5,7 +5,7 @@ import CharityCard from './CharityCard';
 import TestimonialCard from './TestimonialCard';
 import { HomePageProps } from '../types';
 
-const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage }) => {
+const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage  }) => {
   const features = [
     {
       title: "100% Transparent",
