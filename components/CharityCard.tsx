@@ -62,7 +62,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
         </button>
 
         <Link
-          href={`/charity/charity_profile/${encodeURIComponent(name)}`}
+          href={`/charity/charity_profile/${name.replace(/\s+/g, "-")}`}
           className="flex-1 bg-gray-100 text-gray-700 font-medium py-3 px-4 rounded-full hover:bg-gray-200 transition-colors duration-200 text-center"
         >
           View Profile
