@@ -1,0 +1,60 @@
+import React from 'react';
+import { CharityCardProps } from '../types';
+
+const CharityCard: React.FC<CharityCardProps> = ({
+  name,
+  description,
+  received,
+  organizations,
+  setIsModalOpen,
+  setMainMessage,
+}) => {
+  const handleViewProfile = () => {
+    setMainMessage({ type: 'info', text: `Viewing profile for ${name}` });
+    setTimeout(() => setMainMessage(null), 3000);
+  };
+
+  const handleDonateNow = () => {
+    setIsModalOpen(true);
+  };
+
+  return (
+    <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 flex flex-col justify-between">
+      <div>
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">{name}</h3>
+        <p className="text-gray-600 mb-4 leading-relaxed">{description}</p>
+        <div className="mb-4">
+          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Received</p>
+          <p className="text-3xl font-bold text-green-600 mt-1">${received.toLocaleString()}</p>
+        </div>
+        <div className="mb-6">
+          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Organizations</p>
+          <ul className="mt-1 text-gray-700 space-y-1">
+            {organizations.map((org, index) => (
+              <li key={index} className="flex items-center">
+                <span className="h-2 w-2 bg-blue-500 rounded-full mr-2"></span>
+                {org}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="flex space-x-4 mt-auto">
+        <button
+          onClick={handleDonateNow}
+          className="flex-1 bg-blue-600 text-white font-bold py-3 px-4 rounded-full shadow-md hover:bg-blue-700 transition-colors duration-300"
+        >
+          Donate Now
+        </button>
+        <button
+          onClick={handleViewProfile}
+          className="flex-1 bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-full shadow-md hover:bg-gray-300 transition-colors duration-300"
+        >
+          View Profile
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default CharityCard;
