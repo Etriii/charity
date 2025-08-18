@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/solid';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -12,18 +12,84 @@ import LoggedInHomePage from '../components/LoggedInHomePage';
 import MessageDisplay from '@/components/MessageDisplay';
 import { Message } from '@/types';
 
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  createdAt: string;
+}
+
+const getUserStorage = (): User[] => {
+  if (typeof window !== 'undefined') {
+    const users = localStorage.getItem('donateTransparentlyUsers');
+    return users ? JSON.parse(users) : [];
+  }
+  return [];
+};
+
+
+const getCurrentSession = (): User | null => {
+  if (typeof window !== 'undefined') {
+    const user = localStorage.getItem('donateTransparentlyCurrentUser');
+    return user ? JSON.parse(user) : null;
+  }
+  return null;
+};
+
+
+const setCurrentSession = (user?: User) => {
+  if (typeof window !== 'undefined') {
+    if (user) {
+      localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('donateTransparentlyCurrentUser');
+    }
+  }
+};
+
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mainMessage, setMainMessage] = useState<Message>(null);
+  const [mainMessage, setMainMessage] = useState<Message | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
+
+
+  useEffect(() => {
+    const existingUser = getCurrentSession();
+    if (existingUser) {
+      setIsLoggedIn(true);
+      setCurrentUser(existingUser);
+    }
+  }, []);
 
   const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setIsModalOpen(false);
+    const user = getCurrentSession();
+    if (user) {
+      setIsLoggedIn(true);
+      setCurrentUser(user);
+      setIsModalOpen(false);
+      setMainMessage({
+        type: 'success',
+        text: `Welcome back, ${user.username}!`
+      });
+    }
+
+    setTimeout(() => setMainMessage(null), 3000);
   };
-  
+
   const handleLogout = () => {
+    setCurrentSession(undefined);
     setIsLoggedIn(false);
+    setCurrentUser(undefined);
+    
+    setMainMessage({
+      type: 'info',
+      text: 'You have been logged out successfully.'
+    });
+    
+    setTimeout(() => {
+      setMainMessage(null);
+    }, 3000);
   };
 
   return (
@@ -38,14 +104,14 @@ export default function App() {
 
       {isLoggedIn ? (
         <LoggedInHomePage 
-          setIsModalOpen={setIsModalOpen} 
-          setMainMessage={setMainMessage} 
-          userName="Micah"
+          setIsModalOpen={setIsModalOpen}
+          setMainMessage={setMainMessage}
+          userName={currentUser?.username || "User"}
         />
       ) : (
         <HomePage 
-          setIsModalOpen={setIsModalOpen} 
-          setMainMessage={setMainMessage} 
+          setIsModalOpen={setIsModalOpen}
+          setMainMessage={setMainMessage}
         />
       )}
 
@@ -57,8 +123,9 @@ export default function App() {
         title=""
       >
         <DonationAuthContent 
-          onClose={() => setIsModalOpen(false)} 
-          onLoginSuccess={handleLoginSuccess} 
+          onClose={() => setIsModalOpen(false)}
+          onLoginSuccess={handleLoginSuccess}
+          onLogout={handleLogout}
         />
       </Modal>
     </div>

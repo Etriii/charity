@@ -8,7 +8,6 @@ type CharityCardProps = {
   received: number;
   organizations: string[];
   setIsModalOpen: (value: boolean) => void;
-  setMainMessage: (message: string) => void;
 };
 
 const CharityCard: React.FC<CharityCardProps> = ({
@@ -17,7 +16,6 @@ const CharityCard: React.FC<CharityCardProps> = ({
   received,
   organizations,
   setIsModalOpen,
-  setMainMessage,
 }) => {
   const handleDonateNow = () => {
     setIsModalOpen(true);
@@ -56,14 +54,14 @@ const CharityCard: React.FC<CharityCardProps> = ({
       <div className="flex space-x-4 mt-auto">
         <button
           onClick={handleDonateNow}
-          className="flex-1 bg-blue-600 text-white font-bold py-3 px-4 rounded-full shadow-md hover:bg-blue-700 transition-colors duration-300"
+          className="flex-1 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300"
         >
           Donate Now
         </button>
 
         <Link
           href={`/charity/charity_profile/${name.replace(/\s+/g, "-")}`}
-          className="flex-1 bg-gray-100 text-gray-700 font-medium py-3 px-4 rounded-full hover:bg-gray-200 transition-colors duration-200 text-center"
+          className="flex-1 bg-gray-100 text-gray-700 font-medium py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center"
         >
           View Profile
         </Link>
