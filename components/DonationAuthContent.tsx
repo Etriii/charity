@@ -11,7 +11,7 @@ interface DonationAuthContentProps {
 const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLoginSuccess }) => {
   const [connected, setConnected] = useState<boolean>(false);
   const [identity, setIdentity] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"login" | "register" | null>(null);
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const [loginEmail, setLoginEmail] = useState<string>('');
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [registerUsername, setRegisterUsername] = useState<string>('');
@@ -32,7 +32,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
     }
   }, [connected]);
 
-  const handleLogin = (e: ReactFormEvent) => {
+const handleLogin = (e: ReactFormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
     setMessage(null);
@@ -62,15 +62,15 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
       if (mockRegisterSuccess) {
         setConnected(true);
         setIdentity(`donor-registered-${Math.random().toString(36).substring(4)}`);
-        setMessage({ type: 'success', text: 'Account created successfully! Welcome.' });
-        onLoginSuccess();
-        setTimeout(() => onClose(), 2000);
+        setMessage({ type: 'success', text: 'Account created successfully! Please sign in.' });
+        setTimeout(() => setActiveTab("login"), 1000);
       } else {
         setMessage({ type: 'error', text: 'Registration failed. Please try again.' });
       }
       setRegisterLoading(false);
     }, 1500);
   };
+
 
   const LogInIcon = () => <ArrowRightOnRectangleIcon className="w-5 h-5 text-gray-700" />;
   const UserPlusIcon = () => <HeroUserPlusIcon className="w-5 h-5 text-blue-500" />;
