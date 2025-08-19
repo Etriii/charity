@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRightOnRectangleIcon, UserPlusIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
+
+
 interface Message {
   type: 'success' | 'error' | 'info';
   text: string;
@@ -18,8 +20,7 @@ interface DonationAuthContentProps {
   onLogout?: () => void;
 }
 
-// storage
-const getUsersFromStorage = (): User[] => {
+export const getUsersFromStorage = (): User[] => {
   if (typeof window !== 'undefined') {
     const usersJson = localStorage.getItem('donateTransparentlyUsers');
     return usersJson ? JSON.parse(usersJson) : [];
@@ -27,13 +28,13 @@ const getUsersFromStorage = (): User[] => {
   return [];
 };
 
-const setUsersInStorage = (users: User[]) => {
+export const setUsersInStorage = (users: User[]) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem('donateTransparentlyUsers', JSON.stringify(users));
   }
 };
 
-const getCurrentSession = (): User | null => {
+export const getCurrentSession = (): User | null => {
   if (typeof window !== 'undefined') {
     const userJson = localStorage.getItem('donateTransparentlyCurrentUser');
     return userJson ? JSON.parse(userJson) : null;
@@ -41,7 +42,7 @@ const getCurrentSession = (): User | null => {
   return null;
 };
 
-const setCurrentSession = (user: User | null) => {
+export const setCurrentSession = (user: User | null) => {
   if (typeof window !== 'undefined') {
     if (user) {
       localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(user));
@@ -64,6 +65,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
   const [registerLoading, setRegisterLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<Message | null>(null);
 
+  // storage
   const storage = {
     getUsers: (): User[] => {
       return getUsersFromStorage();

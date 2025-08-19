@@ -22,6 +22,7 @@ export interface CharityCardProps {
   organizations: string[];
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   setMainMessage: Dispatch<SetStateAction<Message>>;
+  isLoggedIn: boolean;
 }
 
 export interface TestimonialCardProps {
@@ -34,6 +35,7 @@ export interface TestimonialCardProps {
 export interface HomePageProps {
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   setMainMessage: Dispatch<SetStateAction<Message>>;
+  isLoggedIn: boolean;
 }
 
 export interface HeaderProps {

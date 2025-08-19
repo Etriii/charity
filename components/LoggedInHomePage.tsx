@@ -30,6 +30,7 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
     userName = "Micah"
 }) => {
     const [activeTab, setActiveTab] = useState<'explore' | 'dashboard'>('explore');
+    const isLoggedIn = true;
 
     // mock data
     const userStats = {
@@ -38,7 +39,6 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
         charitiesSupported: 2,
         memberSince: "8/17/2025"
     };
-
 
     const charities = [
         {
@@ -78,7 +78,7 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
         },
         {
             name: "Oxfam",
-            description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, and development.",
+            description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, development.",
             received: 0,
             organizations: ["Oxfam America", "Oxfam International"],
             likes: 2
@@ -104,7 +104,7 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
                         <UserGroupIcon className="h-8 w-8 text-blue-500 mr-3" />
                         <div>
                             <p className="text-sm text-gray-500">Active Charities</p>
-                            <p className="text-2xl font-bold text-blue-600">10</p>
+                            <p className="text-2xl font-bold text-blue-600">{charities.length}</p>
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,9 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
                         <HeartSolid className="h-8 w-8 text-purple-500 mr-3" />
                         <div>
                             <p className="text-sm text-gray-500">Organizations</p>
-                            <p className="text-2xl font-bold text-purple-600">10</p>
+                            <p className="text-2xl font-bold text-purple-600">
+                                {charities.reduce((total, charity) => total + charity.organizations.length, 0)}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -134,78 +136,25 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
             <div>
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">Choose a Charity to Support</h2>
-                    <p className="text-sm text-gray-500">10 charities • Real-time donation tracking</p>
+                    <p className="text-sm text-gray-500">{charities.length} charities • Real-time donation tracking</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {charities.map((charity, index) => (
-                        <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-                            <div className="flex justify-between items-start mb-4">
-                                <h3 className="text-xl font-bold text-gray-800">{charity.name}</h3>
-                                <div className="flex items-center text-gray-400">
-                                    <HeartIcon className="h-5 w-5 mr-1" />
-                                    <span className="text-sm">{charity.likes}</span>
-                                </div>
-                            </div>
-
-                            <p className="text-gray-600 text-sm mb-4 leading-relaxed">{charity.description}</p>
-
-                            <div className="space-y-3 mb-6">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-500 flex items-center">
-                                        <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
-                                        Total Received
-                                    </span>
-                                    <span className="font-bold text-green-600">${charity.received}</span>
-                                </div>
-
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm text-gray-500 flex items-center">
-                                            <BuildingOfficeIcon className="h-4 w-4 mr-1" />
-                                            Organizations
-                                        </span>
-                                        <span className="text-sm font-medium">{charity.organizations.length}</span>
-                                    </div>
-
-                                    <div className="space-y-1">
-                                        <p className="text-xs text-gray-500">Supporting organizations:</p>
-                                        {charity.organizations.map((org, orgIndex) => (
-                                            <div key={orgIndex} className="flex justify-between items-center text-sm">
-                                                <span className="text-gray-700">{org}</span>
-                                                <span className="text-green-600 font-medium">${charity.received}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex space-x-3">
-                                <Link
-                                    href={{
-                                        pathname: "/charity/charity_profile/[name]",
-                                        query: { name: charity.name.replace(/\s+/g, "-") },
-                                    }}
-                                    as={`/charity/charity_profile/${charity.name.replace(/\s+/g, "-")}`}
-                                    className="flex-1 bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center"
-                                >
-                                    View Profile
-                                </Link>
-                                <button
-                                    onClick={() => setIsModalOpen(true)}
-                                    className="flex-1 bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                                >
-                                    Donate Now
-                                </button>
-                            </div>
-                        </div>
+                        <CharityCard
+                            key={index}
+                            name={charity.name}
+                            description={charity.description}
+                            received={charity.received}
+                            organizations={charity.organizations}
+                            setIsModalOpen={setIsModalOpen}
+                            isLoggedIn={isLoggedIn}
+                        />
                     ))}
                 </div>
             </div>
         </div>
     );
-
-    <DashboardTab />
 
     return (
         <div className="container mx-auto pt-24 px-8 min-h-screen">
@@ -213,19 +162,21 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
             <div className="flex space-x-8 mb-8">
                 <button
                     onClick={() => setActiveTab('explore')}
-                    className={`pb-2 font-medium transition-colors ${activeTab === 'explore'
-                        ? 'text-blue-600 border-b-2 border-blue-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                        }`}
+                    className={`pb-2 font-medium transition-colors ${
+                        activeTab === 'explore'
+                            ? 'text-blue-600 border-b-2 border-blue-600'
+                            : 'text-gray-500 hover:text-gray-700'
+                    }`}
                 >
                     Explore Charities
                 </button>
                 <button
                     onClick={() => setActiveTab('dashboard')}
-                    className={`pb-2 font-medium transition-colors ${activeTab === 'dashboard'
-                        ? 'text-blue-600 border-b-2 border-blue-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                        }`}
+                    className={`pb-2 font-medium transition-colors ${
+                        activeTab === 'dashboard'
+                            ? 'text-blue-600 border-b-2 border-blue-600'
+                            : 'text-gray-500 hover:text-gray-700'
+                    }`}
                 >
                     My Dashboard
                 </button>
