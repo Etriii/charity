@@ -3,11 +3,11 @@ import { CubeTransparentIcon, ClipboardDocumentCheckIcon, CheckCircleIcon as Her
 import FeatureCard from './FeatureCard';
 import CharityCard from './CharityCard';
 import TestimonialCard from './TestimonialCard';
-import { Message } from 'postcss';
+import { Message } from '@/types';
 
 interface HomePageProps {
   setIsModalOpen: (isOpen: boolean) => void;
-setMainMessage?: (message: unknown) => void;
+  setMainMessage?: (message: Message) => void;
   isLoggedIn?: boolean;
 }
 
