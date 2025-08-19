@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { XMarkIcon, HeartIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/solid';
-
+import { getCurrentSession } from './DonationAuthContent';
 interface DonationModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -8,39 +8,84 @@ interface DonationModalProps {
     organizations: string[];
 }
 
+interface Donation {
+  amount: number;
+  charity: string;
+  organization: string;
+  type: string;
+  date: string;     
+  datetime: string; 
+  anonymous: boolean;
+  email: string;
+}
+
+const loggedInUserEmail = "user@example.com";
+
 const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityName, organizations }) => {
     const [amount, setAmount] = useState<string>('');
     const [selectedOrganization, setSelectedOrganization] = useState<string>('random');
     const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
     const [paymentMethod, setPaymentMethod] = useState<string>('card');
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
-
     const presetAmounts = [10, 25, 50, 100, 250, 500];
+        if (!isOpen) return null;
 
     const handleAmountClick = (presetAmount: number) => {
         setAmount(presetAmount.toString());
     };
 
-    const handleDonate = async () => {
-        if (!amount || parseFloat(amount) <= 0) {
-            alert('Please enter a valid donation amount');
-            return;
-        }
+const handleDonate = async () => {
+  if (!amount || parseFloat(amount) <= 0) {
+    alert('Please enter a valid donation amount');
+    return;
+  }
 
-        setIsProcessing(true);
-        setTimeout(() => {
-            alert(`Thank you for your $${amount} donation to ${charityName}!`);
-            setIsProcessing(false);
-            onClose();
-            // reset
-            setAmount('');
-            setSelectedOrganization('random');
-            setIsAnonymous(false);
-            setPaymentMethod('card');
-        }, 2000);
-    };
+  setIsProcessing(true);
 
-    if (!isOpen) return null;
+  setTimeout(() => {
+    const currentUser = getCurrentSession();
+
+    // create new donation
+const newDonation: Donation = {
+  amount: parseFloat(amount),
+  charity: charityName,
+  organization: selectedOrganization === 'random' ? 'Random Distribution' : selectedOrganization,
+  type: selectedOrganization === 'random' ? 'Random' : 'Direct',
+  date: new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  }),
+  datetime: new Date().toISOString(),
+  anonymous: isAnonymous,
+  email: currentUser?.email || "none@anonymous.com",
+};
+
+    // recent donations
+    const recentDonations: Donation[] = JSON.parse(localStorage.getItem("recentDonations") || "[]");
+    recentDonations.unshift(newDonation);
+    localStorage.setItem("recentDonations", JSON.stringify(recentDonations));
+
+    // all donations
+    const allDonations: Donation[] = JSON.parse(localStorage.getItem("donations") || "[]");
+    allDonations.push(newDonation);
+    localStorage.setItem("donations", JSON.stringify(allDonations));
+
+    // triggers live updates
+    window.dispatchEvent(new Event("donationsUpdated"));
+
+    alert(`Thank you for your $${amount} donation to ${charityName}!`);
+
+    setIsProcessing(false);
+    onClose();
+
+    // reset
+    setAmount('');
+    setSelectedOrganization('random');
+    setIsAnonymous(false);
+    setPaymentMethod('card');
+  }, 2000);
+};
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -78,8 +123,8 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
                                     key={presetAmount}
                                     onClick={() => handleAmountClick(presetAmount)}
                                     className={`py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${amount === presetAmount.toString()
-                                            ? 'bg-blue-100 border-blue-500 text-blue-700'
-                                            : 'bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100'
+                                        ? 'bg-blue-100 border-blue-500 text-blue-700'
+                                        : 'bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100'
                                         }`}
                                 >
                                     ${presetAmount}

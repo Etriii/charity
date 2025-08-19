@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     HeartIcon,
     UserGroupIcon,
@@ -22,65 +22,209 @@ interface LoggedInHomePageProps {
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
     setMainMessage: Dispatch<SetStateAction<Message>>;
     userName?: string;
+    userEmail?: string;
+}
+
+interface Donation {
+    amount: number;
+    charity: string;
+    organization: string;
+    anonymous: boolean;
+    date: string;
+    datetime: string;
+    email: string;
+    type: string;
 }
 
 const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
     setIsModalOpen,
     setMainMessage,
-    userName = "Micah"
+    userName: defaultName = "Micah",
+    userEmail: defaultEmail = "micah@gmail.com"
 }) => {
     const [activeTab, setActiveTab] = useState<'explore' | 'dashboard'>('explore');
+    const [userDonations, setUserDonations] = useState<Donation[]>([]);
+    const [userStats, setUserStats] = useState({
+        totalDonated: 0.00,
+        donationsMade: 0,
+        charitiesSupported: 0,
+        memberSince: ""
+    });
+
+    // state of user identity
+    const [userName, setUserName] = useState(defaultName);
+    const [userEmail, setUserEmail] = useState(defaultEmail);
+
     const isLoggedIn = true;
 
-    // mock data
-    const userStats = {
-        totalDonated: 5178.00,
-        donationsMade: 4,
-        charitiesSupported: 2,
-        memberSince: "8/17/2025"
+    const today = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+    });
+
+    // function loads donations filtered by current logged in user email
+    const loadUserData = () => {
+        try {
+            const donationsData = localStorage.getItem("donations");
+            if (donationsData) {
+                const allDonations: Donation[] = JSON.parse(donationsData);
+
+                const userSpecificDonations = allDonations.filter(
+                    (donation) => donation.email === userEmail
+                );
+
+                setUserDonations(userSpecificDonations);
+
+                const totalDonated = userSpecificDonations.reduce(
+                    (sum, d) => sum + d.amount,
+                    0
+                );
+
+                const uniqueCharities = new Set(
+                    userSpecificDonations.map((d) => d.charity)
+                );
+
+                let memberSince = today;
+                if (userSpecificDonations.length > 0) {
+                    const earliestDate = userSpecificDonations.reduce(
+                        (earliest, d) =>
+                            new Date(d.date) < new Date(earliest)
+                                ? d.date
+                                : earliest,
+                        userSpecificDonations[0].date
+                    );
+                    memberSince = earliestDate;
+                }
+
+                setUserStats({
+                    totalDonated,
+                    donationsMade: userSpecificDonations.length,
+                    charitiesSupported: uniqueCharities.size,
+                    memberSince,
+                });
+            } else {
+                setUserStats({
+                    totalDonated: 0,
+                    donationsMade: 0,
+                    charitiesSupported: 0,
+                    memberSince: today,
+                });
+            }
+        } catch (error) {
+            console.error("Error loading donations from localStorage:", error);
+            setUserStats({
+                totalDonated: 0,
+                donationsMade: 0,
+                charitiesSupported: 0,
+                memberSince: today,
+            });
+        }
+    };
+
+    useEffect(() => {
+        // loads current user who is logged in
+        const loadCurrentUser = () => {
+            const storedUser = localStorage.getItem(
+                "donateTransparentlyCurrentUser"
+            );
+            if (storedUser) {
+                try {
+                    const parsedUser = JSON.parse(storedUser);
+                    setUserEmail(parsedUser?.email || defaultEmail);
+                    setUserName(parsedUser?.username || defaultName);
+                } catch (err) {
+                    console.error("Error parsing current user:", err);
+                }
+            } else {
+                setUserEmail(defaultEmail);
+                setUserName(defaultName);
+            }
+        };
+
+        loadCurrentUser();
+        loadUserData();
+
+        window.addEventListener("storage", loadCurrentUser);
+        window.addEventListener("storage", (e) => {
+            if (e.key === "donations") loadUserData();
+        });
+        window.addEventListener("donationAdded", loadUserData);
+
+        return () => {
+            window.removeEventListener("storage", loadCurrentUser);
+            window.removeEventListener("storage", (e) => {
+                if (e.key === "donations") loadUserData();
+            });
+            window.removeEventListener("donationAdded", loadUserData);
+        };
+    }, [defaultEmail, defaultName, userEmail, today]);
+
+    // cal charity stats
+    const getCharityStats = (charityName: string) => {
+        try {
+            const donationsData = localStorage.getItem('donations');
+            if (donationsData) {
+                const allDonations: Donation[] = JSON.parse(donationsData);
+                const charityDonations = allDonations.filter(
+                    donation => donation.charity === charityName
+                );
+                
+                const totalReceived = charityDonations.reduce(
+                    (sum, donation) => sum + donation.amount, 0
+                );
+                
+                const uniqueOrganizations = new Set(
+                    charityDonations.map(donation => donation.organization)
+                );
+                
+                return {
+                    received: totalReceived,
+                    organizations: Array.from(uniqueOrganizations)
+                };
+            }
+        } catch (error) {
+            console.error('Error calculating charity stats:', error);
+        }
+        
+        return { received: 0, organizations: [] };
     };
 
     const charities = [
         {
             name: "UNICEF",
             description: "United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
-            received: 500,
-            organizations: ["UNICEF USA", "UNICEF International"],
+            ...getCharityStats("UNICEF"),
             likes: 2
         },
         {
             name: "Red Cross",
             description: "International humanitarian movement providing emergency assistance, disaster relief, and health education.",
-            received: 100,
-            organizations: ["American Red Cross", "International Red Cross"],
+            ...getCharityStats("Red Cross"),
             likes: 2
         },
         {
             name: "Doctors Without Borders (MSF)",
             description: "Medical humanitarian organization delivering emergency aid to people affected by conflict, epidemics, disasters.",
-            received: 450,
-            organizations: ["MSF USA", "MSF International"],
+            ...getCharityStats("Doctors Without Borders (MSF)"),
             likes: 2
         },
         {
             name: "World Wildlife Fund (WWF)",
             description: "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
-            received: 150,
-            organizations: ["WWF-US", "WWF International"],
+            ...getCharityStats("World Wildlife Fund (WWF)"),
             likes: 2
         },
         {
             name: "Salvation Army",
             description: "International charitable organization providing relief, rehabilitation, and community support.",
-            received: 210,
-            organizations: ["The Salvation Army USA", "The Salvation Army International"],
+            ...getCharityStats("Salvation Army"),
             likes: 2
         },
         {
             name: "Oxfam",
             description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, development.",
-            received: 402,
-            organizations: ["Oxfam America", "Oxfam International"],
+            ...getCharityStats("Oxfam"),
             likes: 2
         },
     ];
@@ -162,28 +306,26 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
             <div className="flex space-x-8 mb-8">
                 <button
                     onClick={() => setActiveTab('explore')}
-                    className={`pb-2 font-medium transition-colors ${
-                        activeTab === 'explore'
+                    className={`pb-2 font-medium transition-colors ${activeTab === 'explore'
                             ? 'text-blue-600 border-b-2 border-blue-600'
                             : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                        }`}
                 >
                     Explore Charities
                 </button>
                 <button
                     onClick={() => setActiveTab('dashboard')}
-                    className={`pb-2 font-medium transition-colors ${
-                        activeTab === 'dashboard'
+                    className={`pb-2 font-medium transition-colors ${activeTab === 'dashboard'
                             ? 'text-blue-600 border-b-2 border-blue-600'
                             : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                        }`}
                 >
                     My Dashboard
                 </button>
             </div>
 
             {/* tab content */}
-            {activeTab === 'explore' ? <ExploreTab /> : <DashboardTab />}
+            {activeTab === 'explore' ? <ExploreTab /> : <DashboardTab userEmail={userEmail} />}
         </div>
     );
 };
