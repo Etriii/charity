@@ -40,11 +40,11 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isL
 
   const charities: Charity[] = [
     { name: "UNICEF", description: "United Nations agency working in over 190 countries and territories to save children's lives, defend their rights, and help them fulfill their potential.", received: 500, organizations: ["UNICEF USA", "UNICEF International"] },
-    { name: "Red Cross", description: "International humanitarian movement providing emergency assistance, disaster relief, and disaster preparedness education.", received: 42, organizations: ["American Red Cross", "International Red Cross"] },
-    { name: "Doctors Without Borders (MSF)", description: "Medical humanitarian organization providing medical care to people affected by conflict, epidemics, disasters, or exclusion from healthcare.", received: 0, organizations: ["MSF USA", "MSF International"] },
-    { name: "World Wildlife Fund (WWF)", description: "Global nonprofit working to conserve nature and reduce the most pressing threats to the diversity of life on Earth.", received: 0, organizations: ["WWF-US", "WWF International"] },
-    { name: "Salvation Army", description: "International charitable organization that provides social services and operates thrift stores to fund its programs.", received: 0, organizations: ["The Salvation Army USA", "The Salvation Army International"] },
-    { name: "Oxfam", description: "Global movement of people working together to end the injustice of poverty, inequality, and climate change.", received: 0, organizations: ["Oxfam America", "Oxfam International"] },
+    { name: "Red Cross", description: "International humanitarian movement providing emergency assistance, disaster relief, and disaster preparedness education.", received: 100, organizations: ["American Red Cross", "International Red Cross"] },
+    { name: "Doctors Without Borders (MSF)", description: "Medical humanitarian organization providing medical care to people affected by conflict, epidemics, disasters, or exclusion from healthcare.", received: 450, organizations: ["MSF USA", "MSF International"] },
+    { name: "World Wildlife Fund (WWF)", description: "Global nonprofit working to conserve nature and reduce the most pressing threats to the diversity of life on Earth.", received: 150, organizations: ["WWF-US", "WWF International"] },
+    { name: "Salvation Army", description: "International charitable organization that provides social services and operates thrift stores to fund its programs.", received: 210, organizations: ["The Salvation Army USA", "The Salvation Army International"] },
+    { name: "Oxfam", description: "Global movement of people working together to end the injustice of poverty, inequality, and climate change.", received: 402, organizations: ["Oxfam America", "Oxfam International"] },
   ];
 
   const testimonials: Testimonial[] = [
