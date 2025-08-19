@@ -1,96 +1,206 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowPathIcon, GiftIcon, CalendarIcon, ChartBarIcon, ArrowTrendingUpIcon, HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 
-const DashboardTab = () => {
-  const [activeTab, setActiveTab] = useState('history');
-  
-  // mockdata
-  const userName = "Micah";
-  const userStats = {
-    totalDonated: 5178.00,
-    donationsMade: 4,
-    charitiesSupported: 2,
-    memberSince: "8/17/2025"
-  };
-  
-  const recentDonations = [
-    {
-      amount: 4720.00,
-      charity: "American Red Cross",
-      organization: "American Red Cross",
-      type: "Direct",
-      date: "Aug 15, 2025",
-      anonymous: false
-    },
-    {
-      amount: 1000.00,
-      charity: "UNICEF USA",
-      organization: "UNICEF USA",
-      type: "Random",
-      date: "Aug 10, 2025",
-      anonymous: true
-    },
-    {
-      amount: 458.00,
-      charity: "Local Food Bank",
-      organization: "Community Food Network",
-      type: "Direct",
-      date: "Aug 5, 2025",
-      anonymous: false
+type Donation = {
+  amount: number;
+  charity: string;
+  organization: string;
+  type: string;
+  date: string;
+  anonymous: boolean;
+  email: string;
+  datetime: string;
+};
+
+interface DashboardTabProps {
+  userEmail: string;
+}
+
+const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
+  const [activeTab, setActiveTab] = useState("history");
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [userStats, setUserStats] = useState({
+    totalDonated: 0,
+    donationsMade: 0,
+    charitiesSupported: 0,
+    memberSince: "",
+  });
+
+  // refreshes data from localStorage
+  const refreshData = () => {
+    try {
+      //loads datafrom localstorage
+      const stored = localStorage.getItem("donations");
+      const allDonations: Donation[] = stored ? JSON.parse(stored) : [];
+      
+      // filters donations for current logged in user
+      const userDonations = allDonations.filter(donation => donation.email === userEmail);
+      
+      // sorts doantion by datetime in descending order
+      const sortedDonations = userDonations.sort((a, b) => {
+        return new Date(b.datetime).getTime() - new Date(a.datetime).getTime();
+      });
+
+      setDonations(sortedDonations);
+
+//cal stats
+      if (sortedDonations.length > 0) {
+        const totalDonated = sortedDonations.reduce((sum, d) => sum + d.amount, 0);
+        const donationsMade = sortedDonations.length;
+        const charitiesSupported = new Set(sortedDonations.map((d) => d.charity)).size;
+
+        const firstDonationDate = sortedDonations[sortedDonations.length - 1].date;
+
+        setUserStats({
+          totalDonated,
+          donationsMade,
+          charitiesSupported,
+          memberSince: firstDonationDate,
+        });
+      } else {
+        setUserStats({
+          totalDonated: 0,
+          donationsMade: 0,
+          charitiesSupported: 0,
+          memberSince: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+          }),
+        });
+      }
+    } catch (error) {
+      console.error('Error loading donations from localStorage:', error);
+      setUserStats({
+        totalDonated: 0,
+        donationsMade: 0,
+        charitiesSupported: 0,
+        memberSince: new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        }),
+      });
     }
-  ];
-
-  const donationStats = {
-    publicDonations: { count: 3, percentage: 75 },
-    anonymousDonations: { count: 1, percentage: 25 },
-    directDonations: { count: 2, percentage: 50 },
-    randomizedDonations: { count: 2, percentage: 50 }
   };
 
-  const topCharities = [
-    { name: "American Red Cross", amount: 4720.00 },
-    { name: "UNICEF USA", amount: 1000.00 }
-  ];
+  useEffect(() => {
+    refreshData();
+    
+    // local storage listener when donations are added
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'donations') {
+        refreshData();
+      }
+    };
+
+    const handleDonationUpdate = () => {
+      refreshData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('donationAdded', handleDonationUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('donationAdded', handleDonationUpdate);
+    };
+  }, [userEmail]); // re-runs when email changes
+
+  // cal stats from user's donations
+  const donationStats = {
+    publicDonations: {
+      count: donations.filter((d) => !d.anonymous).length,
+      percentage:
+        donations.length > 0
+          ? (donations.filter((d) => !d.anonymous).length / donations.length) * 100
+          : 0,
+    },
+    anonymousDonations: {
+      count: donations.filter((d) => d.anonymous).length,
+      percentage:
+        donations.length > 0
+          ? (donations.filter((d) => d.anonymous).length / donations.length) * 100
+          : 0,
+    },
+    directDonations: {
+      count: donations.filter((d) => d.type === "Direct").length,
+      percentage:
+        donations.length > 0
+          ? (donations.filter((d) => d.type === "Direct").length / donations.length) * 100
+          : 0,
+    },
+    randomizedDonations: {
+      count: donations.filter((d) => d.type === "Random").length,
+      percentage:
+        donations.length > 0
+          ? (donations.filter((d) => d.type === "Random").length / donations.length) * 100
+          : 0,
+    },
+  };
+
+  // cal top charities from user's donations
+  const topCharities: { charity: string; total: number }[] = Object.values(
+    donations.reduce((acc: Record<string, { charity: string; total: number }>, donation) => {
+      if (!acc[donation.charity]) {
+        acc[donation.charity] = { charity: donation.charity, total: 0 };
+      }
+      acc[donation.charity].total += donation.amount;
+      return acc;
+    }, {})
+  ).sort((a, b) => b.total - a.total); // sorts by total amount descending
 
   const renderDonationHistory = () => (
     <div className="space-y-4">
-      {recentDonations.map((donation, index) => (
-        <div key={index} className="flex justify-between items-center py-4 border-b border-gray-100 last:border-b-0">
-          <div className="flex-1">
-            <div className="flex items-center space-x-3 mb-1">
-              <span className="text-lg font-bold text-gray-800">${donation.amount.toFixed(2)}</span>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                donation.type === 'Random' 
-                  ? 'bg-purple-100 text-purple-700' 
-                  : 'bg-blue-100 text-blue-700'
-              }`}>
-                {donation.type}
-              </span>
-              {donation.anonymous && (
-                <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                  Anonymous
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-600">
-              To: {donation.charity}
-            </p>
-            <p className="text-xs text-gray-500">
-              Organization: {donation.organization}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-500">{donation.date}</p>
-          </div>
+      {donations.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          <GiftIcon className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+          <p>No donations yet. Start making a difference today!</p>
         </div>
-      ))}
+      ) : (
+        donations.map((donation, index) => (
+          <div
+            key={index}
+            className="flex justify-between items-center py-4 border-b border-gray-100 last:border-b-0"
+          >
+            <div className="flex-1">
+              <div className="flex items-center space-x-3 mb-1">
+                <span className="text-lg font-bold text-gray-800">
+                  ${donation.amount.toFixed(2)}
+                </span>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    donation.type === "Random"
+                      ? "bg-purple-100 text-purple-700"
+                      : "bg-blue-100 text-blue-700"
+                  }`}
+                >
+                  {donation.type}
+                </span>
+                {donation.anonymous && (
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                    Anonymous
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-gray-600">To: {donation.charity}</p>
+              <p className="text-xs text-gray-500">
+                Organization: {donation.organization}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-500">{donation.date}</p>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 
   const renderStatistics = () => (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* donation */}
+        {/* donations */}
         <div className="bg-gray-50 rounded-xl p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">Donation Breakdown</h4>
           <div className="space-y-4">
@@ -99,7 +209,7 @@ const DashboardTab = () => {
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-blue-600 h-2 rounded-full" 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-500" 
                     style={{ width: `${donationStats.publicDonations.percentage}%` }}
                   ></div>
                 </div>
@@ -112,7 +222,7 @@ const DashboardTab = () => {
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-gray-600 h-2 rounded-full" 
+                    className="bg-gray-600 h-2 rounded-full transition-all duration-500" 
                     style={{ width: `${donationStats.anonymousDonations.percentage}%` }}
                   ></div>
                 </div>
@@ -125,7 +235,7 @@ const DashboardTab = () => {
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-green-600 h-2 rounded-full" 
+                    className="bg-green-600 h-2 rounded-full transition-all duration-500" 
                     style={{ width: `${donationStats.directDonations.percentage}%` }}
                   ></div>
                 </div>
@@ -138,7 +248,7 @@ const DashboardTab = () => {
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-purple-600 h-2 rounded-full" 
+                    className="bg-purple-600 h-2 rounded-full transition-all duration-500" 
                     style={{ width: `${donationStats.randomizedDonations.percentage}%` }}
                   ></div>
                 </div>
@@ -150,17 +260,27 @@ const DashboardTab = () => {
 
         {/* top charities */}
         <div className="bg-gray-50 rounded-xl p-6">
-          <h4 className="text-lg font-semibold text-gray-800 mb-4">Top Charities</h4>
+          <h4 className="text-lg font-semibold text-gray-800 mb-4">Your Top Charities</h4>
           <div className="space-y-4">
-            {topCharities.map((charity, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-3 h-3 rounded-full ${index === 0 ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
-                  <span className="text-sm text-gray-700">{charity.name}</span>
-                </div>
-                <span className="text-sm font-medium text-gray-800">${charity.amount.toFixed(2)}</span>
+            {topCharities.length === 0 ? (
+              <div className="text-center py-4 text-gray-500">
+                <p className="text-sm">No donations yet</p>
               </div>
-            ))}
+            ) : (
+              topCharities.map((charity, index) => (
+                <div key={charity.charity} className="flex justify-between items-center">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-3 h-3 rounded-full ${
+                      index === 0 ? 'bg-yellow-500' : 
+                      index === 1 ? 'bg-gray-400' :
+                      index === 2 ? 'bg-orange-500' : 'bg-green-500'
+                    }`}></div>
+                    <span className="text-sm text-gray-700">{charity.charity}</span>
+                  </div>
+                  <span className="text-sm font-medium text-gray-800">${charity.total.toFixed(2)}</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -178,40 +298,49 @@ const DashboardTab = () => {
 
   const renderYourImpact = () => (
     <div className="space-y-6">
-      {/* impact */}
+      {/* impact summary */}
       <div className="text-center bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
           <ArrowTrendingUpIcon className="h-8 w-8 text-green-600" />
         </div>
-        <h4 className="text-2xl font-bold text-gray-800 mb-2">You have made 4 donations!</h4>
+        <h4 className="text-2xl font-bold text-gray-800 mb-2">
+          You have made {userStats.donationsMade} donation{userStats.donationsMade !== 1 ? 's' : ''}!
+        </h4>
         <p className="text-gray-600 mb-4">
-          Your generosity has contributed $5178.00 to 2 different charities.
+          Your generosity has contributed ${userStats.totalDonated.toFixed(2)} to {userStats.charitiesSupported} different {userStats.charitiesSupported === 1 ? 'charity' : 'charities'}.
         </p>
       </div>
 
-      {/* org supported */}
+      {/* orgs supported */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h4 className="text-lg font-semibold text-gray-800 mb-4">Organizations You have Supported</h4>
+        <h4 className="text-lg font-semibold text-gray-800 mb-4">Organizations You Have Supported</h4>
         <div className="space-y-4">
-          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <HeartSolid className="h-5 w-5 text-red-600" />
-              </div>
-              <span className="font-medium text-gray-800">American Red Cross</span>
+          {topCharities.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <HeartSolid className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p>Start donating to see your impact!</p>
             </div>
-            <span className="text-lg font-bold text-green-600">$4720.00</span>
-          </div>
-          
-          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <HeartSolid className="h-5 w-5 text-blue-600" />
+          ) : (
+            topCharities.map((charity, index) => (
+              <div key={charity.charity} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    index % 4 === 0 ? 'bg-red-100' :
+                    index % 4 === 1 ? 'bg-blue-100' :
+                    index % 4 === 2 ? 'bg-green-100' : 'bg-purple-100'
+                  }`}>
+                    <HeartSolid className={`h-5 w-5 ${
+                      index % 4 === 0 ? 'text-red-600' :
+                      index % 4 === 1 ? 'text-blue-600' :
+                      index % 4 === 2 ? 'text-green-600' : 'text-purple-600'
+                    }`} />
+                  </div>
+                  <span className="font-medium text-gray-800">{charity.charity}</span>
+                </div>
+                <span className="text-lg font-bold text-green-600">${charity.total.toFixed(2)}</span>
               </div>
-              <span className="font-medium text-gray-800">UNICEF USA</span>
-            </div>
-            <span className="text-lg font-bold text-green-600">$1000.00</span>
-          </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -236,13 +365,16 @@ const DashboardTab = () => {
 
   return (
     <div className="space-y-8">
-      {/* welcome */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h2>
+            <p className="text-gray-600">Showing data for: {userEmail}</p>
           </div>
-          <button className="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+          <button 
+            onClick={refreshData}
+            className="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          >
             <ArrowPathIcon className="h-4 w-4 mr-2" />
             <span className="text-sm">Refresh History</span>
           </button>
@@ -310,7 +442,7 @@ const DashboardTab = () => {
           <div className="flex space-x-4 text-sm">
             <button 
               onClick={() => setActiveTab('history')}
-              className={`font-medium pb-1 ${
+              className={`font-medium pb-1 transition-colors ${
                 activeTab === 'history' 
                   ? 'text-blue-600 border-b-2 border-blue-600' 
                   : 'text-gray-500 hover:text-gray-700'
@@ -320,7 +452,7 @@ const DashboardTab = () => {
             </button>
             <button 
               onClick={() => setActiveTab('statistics')}
-              className={`font-medium pb-1 ${
+              className={`font-medium pb-1 transition-colors ${
                 activeTab === 'statistics' 
                   ? 'text-blue-600 border-b-2 border-blue-600' 
                   : 'text-gray-500 hover:text-gray-700'
@@ -330,7 +462,7 @@ const DashboardTab = () => {
             </button>
             <button 
               onClick={() => setActiveTab('impact')}
-              className={`font-medium pb-1 ${
+              className={`font-medium pb-1 transition-colors ${
                 activeTab === 'impact' 
                   ? 'text-blue-600 border-b-2 border-blue-600' 
                   : 'text-gray-500 hover:text-gray-700'

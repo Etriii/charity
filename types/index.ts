@@ -47,3 +47,13 @@ export interface HeaderProps {
 export interface MessageDisplayProps {
   message: Message;
 }
+
+export type Donation = {
+  amount: number;
+  charity: string;
+  organization: string;
+  type: string;
+  date: string;
+  anonymous: boolean;
+  email: string;
+};
