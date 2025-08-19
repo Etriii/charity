@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { use } from "react";
 import Image from "next/image";
 import { Calendar, MapPin, Tag, DollarSign } from "lucide-react";
 import {
@@ -38,7 +38,7 @@ const charitiesData: Record<string, Charity> = {
   unicef: {
     name: "UNICEF",
     totalReceived: "$500",
-    organizations: ["UNICEF USA", "UNICEF Philippines"],
+    organizations: ["UNICEF USA", "UNICEF International"],
     fullDescription:
       "UNICEF, the United Nations Children's Fund, works in the world's toughest places. United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
     image: "/images/UNICEFBG.jpg",
@@ -49,110 +49,115 @@ const charitiesData: Record<string, Charity> = {
     donors: 15,
     avgGift: 34,
     donationHistory: [
-      { donor: "Jane Doe", amount: 100, date: "2023-12-15" },
-      { donor: "John Smith", amount: 200, date: "2024-02-20" },
       { donor: "Emily Chen", amount: 200, date: "2024-04-05" },
+      { donor: "John Smith", amount: 200, date: "2024-02-20" },
+      { donor: "Jane Doe", amount: 100, date: "2023-12-15" },
+
     ],
   },
 
   "red-cross": {
     name: "Red Cross",
-    totalReceived: "$42",
-    organizations: ["American Red Cross", "Philippines Red Cross"],
+    totalReceived: "$100",
+    organizations: ["American Red Cross", "International Red Cross"],
     fullDescription:
       "The Red Cross, part of the global Red Cross and Red Crescent network, provides humanitarian aid. We are an International humanitarian movement providing emergency assistance, disaster relief, and health education.",
-    image: "/images/RCbg.jpg",
+    image: "/images/RCBG.jpg",
     profile_image: "/images/RC.jpg",
     established: "1863",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 5,
+    donors: 2,
     avgGift: 8,
     donationHistory: [
-      { donor: "Michael Lee", amount: 20, date: "2023-11-10" },
-      { donor: "Sarah Park", amount: 22, date: "2024-01-08" },
+      { donor: "Michael Lee", amount: 75, date: "2023-11-10" },
+      { donor: "Sarah Park", amount: 25, date: "2024-01-08" },
     ],
   },
   "doctors-without-borders-(msf)": {
     name: "Doctors Without Borders (MSF)",
-    totalReceived: "$0",
-    organizations: ["MSF USA", "MSF Philippines"],
+    totalReceived: "$450",
+    organizations: ["MSF USA", "MSF International"],
     fullDescription:
       "Doctors Without Borders/Médecins Sans Frontières (MSF) is an international, independent organization who delivers emergency aid at all crisis.",
-    image: "/images/MSFBG1.jpg",
+    image: "/images/MSFB.avif",
     profile_image: "/images/MSF.png",
-    established: "1863",
+    established: "1971",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 5,
-    avgGift: 8,
+    donors: 3,
+    avgGift: 4,
     donationHistory: [
-      { donor: "Michael Lee", amount: 20, date: "2023-11-10" },
-      { donor: "Sarah Park", amount: 22, date: "2024-01-08" },
+      { donor: "Sheena Parky", amount: 150, date: "2024-01-20" },
+      { donor: "Meisha Tiangco", amount: 50, date: "2024-01-08" },
+      { donor: "Michael Lyson", amount: 250, date: "2023-11-10" },
     ],
   },
   "world-wildlife-fund-(wwf)": {
     name: "World Wildlife Fund (WWF)",
-    totalReceived: "$0",
-    organizations: ["MWWF US", "WWF Philippines"],
+    totalReceived: "$150",
+    organizations: ["MWWF US", "WWF International"],
     fullDescription:
       "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
     image: "/images/WWFBG.jpg",
-    profile_image: "/images/WWF.png",
-    established: "1863",
+    profile_image: "/images/WWF.jpg",
+    established: "1961",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 5,
-    avgGift: 8,
+    donors: 2,
+    avgGift: 3,
     donationHistory: [
-      { donor: "Michael Lee", amount: 20, date: "2023-11-10" },
-      { donor: "Sarah Park", amount: 22, date: "2024-01-08" },
+      { donor: "Lyra Patinson", amount: 75, date: "2024-01-08" },
+      { donor: "Mista Mone", amount: 75, date: "2023-11-10" },
     ],
   },
   "salvation-army": {
     name: "Salvation Army",
-    totalReceived: "$0",
-    organizations: ["The Salvation Army USA", "The Salvation Army Philippines"],
+    totalReceived: "$210",
+    organizations: ["The Salvation Army USA", "The Salvation Army International"],
     fullDescription:
       "International charitable organization providing relief, rehabilitation, and community support.",
     image: "/images/SABG.jpg",
     profile_image: "/images/SA.jpg",
-    established: "1863",
+    established: "1865",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 5,
+    donors: 3,
     avgGift: 8,
     donationHistory: [
-      { donor: "Michael Lee", amount: 20, date: "2023-11-10" },
-      { donor: "Sarah Park", amount: 22, date: "2024-01-08" },
+      { donor: "Michael Rey", amount: 110, date: "2025-1-10" },
+      { donor: "Mint Park", amount: 40, date: "2024-01-08" },
+      { donor: "Michael Jhonson", amount: 60, date: "2023-11-10" }
     ],
   },
   oxfam: {
     name: "Oxfam",
-    totalReceived: "$0",
+    totalReceived: "$402",
     organizations: ["Oxfam America", "Oxfam International"],
     fullDescription:
       "Global movement to end the injustice of poverty through humanitarian aid, advocacy, and development.",
     image: "/images/OXFBG.jpg",
     profile_image: "/images/OXF.png",
-    established: "1863",
+    established: "1942",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 5,
-    avgGift: 8,
+    donors: 2,
+    avgGift: 2,
     donationHistory: [
-      { donor: "Michael Lee", amount: 20, date: "2023-11-10" },
-      { donor: "Sarah Park", amount: 22, date: "2024-01-08" },
+      { donor: "Sarah Lee", amount: 300, date: "2024-01-08" },
+      { donor: "Michael Kim", amount: 102, date: "2023-11-10" }
     ],
   },
 };
 
 interface PageProps {
-  params: { name: string };
+  params: Promise<{ name: string }>;
+  // params: { name: string };
 }
 
 export default function CharityPage({ params }: PageProps) {
-  const key = params.name.toLowerCase() as keyof typeof charitiesData;
+  const { name } = use(params); // ✅ unwrap with React.use()
+  const key = name.toLowerCase() as keyof typeof charitiesData;
   const charity = charitiesData[key];
   const router = useRouter();
 
@@ -283,7 +288,7 @@ export default function CharityPage({ params }: PageProps) {
         <div className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Donation History */}
           <div className="md:col-span-2 bg-white rounded-2xl shadow-md p-6">
-            <h2 className="text-xl font-bold mb-4">Donation History</h2>
+            <h2 className="text-xl font-bold mb-4">Recent Donations</h2>
             <ul className="divide-y divide-gray-200">
               {charity.donationHistory.map((donation, index) => (
                 <li

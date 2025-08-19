@@ -51,35 +51,35 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
         {
             name: "Red Cross",
             description: "International humanitarian movement providing emergency assistance, disaster relief, and health education.",
-            received: 42,
+            received: 100,
             organizations: ["American Red Cross", "International Red Cross"],
             likes: 2
         },
         {
             name: "Doctors Without Borders (MSF)",
             description: "Medical humanitarian organization delivering emergency aid to people affected by conflict, epidemics, disasters.",
-            received: 0,
+            received: 450,
             organizations: ["MSF USA", "MSF International"],
             likes: 2
         },
         {
             name: "World Wildlife Fund (WWF)",
             description: "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
-            received: 0,
+            received: 150,
             organizations: ["WWF-US", "WWF International"],
             likes: 2
         },
         {
             name: "Salvation Army",
             description: "International charitable organization providing relief, rehabilitation, and community support.",
-            received: 0,
+            received: 210,
             organizations: ["The Salvation Army USA", "The Salvation Army International"],
             likes: 2
         },
         {
             name: "Oxfam",
             description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, development.",
-            received: 0,
+            received: 402,
             organizations: ["Oxfam America", "Oxfam International"],
             likes: 2
         },
