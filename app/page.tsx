@@ -27,7 +27,6 @@ const getUserStorage = (): User[] => {
   return [];
 };
 
-
 const getCurrentSession = (): User | null => {
   if (typeof window !== 'undefined') {
     const user = localStorage.getItem('donateTransparentlyCurrentUser');
@@ -35,7 +34,6 @@ const getCurrentSession = (): User | null => {
   }
   return null;
 };
-
 
 const setCurrentSession = (user?: User) => {
   if (typeof window !== 'undefined') {
@@ -52,7 +50,6 @@ export default function App() {
   const [mainMessage, setMainMessage] = useState<Message | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
-
 
   useEffect(() => {
     const existingUser = getCurrentSession();
@@ -98,6 +95,7 @@ export default function App() {
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
         onOpenModal={() => setIsModalOpen(true)}
+        userEmail={currentUser?.email} 
       />
 
       <MessageDisplay message={mainMessage} />

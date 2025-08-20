@@ -32,10 +32,10 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
       //loads datafrom localstorage
       const stored = localStorage.getItem("donations");
       const allDonations: Donation[] = stored ? JSON.parse(stored) : [];
-      
+
       // filters donations for current logged in user
       const userDonations = allDonations.filter(donation => donation.email === userEmail);
-      
+
       // sorts doantion by datetime in descending order
       const sortedDonations = userDonations.sort((a, b) => {
         return new Date(b.datetime).getTime() - new Date(a.datetime).getTime();
@@ -43,7 +43,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
 
       setDonations(sortedDonations);
 
-//cal stats
+      //cal stats
       if (sortedDonations.length > 0) {
         const totalDonated = sortedDonations.reduce((sum, d) => sum + d.amount, 0);
         const donationsMade = sortedDonations.length;
@@ -86,7 +86,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
 
   useEffect(() => {
     refreshData();
-    
+
     // local storage listener when donations are added
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'donations') {
@@ -169,11 +169,10 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
                   ${donation.amount.toFixed(2)}
                 </span>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    donation.type === "Random"
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${donation.type === "Random"
                       ? "bg-purple-100 text-purple-700"
                       : "bg-blue-100 text-blue-700"
-                  }`}
+                    }`}
                 >
                   {donation.type}
                 </span>
@@ -208,47 +207,47 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
               <span className="text-sm text-gray-600">Public Donations</span>
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-500" 
+                  <div
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${donationStats.publicDonations.percentage}%` }}
                   ></div>
                 </div>
                 <span className="text-sm font-medium text-gray-800">{donationStats.publicDonations.count}</span>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Anonymous Donations</span>
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-gray-600 h-2 rounded-full transition-all duration-500" 
+                  <div
+                    className="bg-gray-600 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${donationStats.anonymousDonations.percentage}%` }}
                   ></div>
                 </div>
                 <span className="text-sm font-medium text-gray-800">{donationStats.anonymousDonations.count}</span>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Direct Donations</span>
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-600 h-2 rounded-full transition-all duration-500" 
+                  <div
+                    className="bg-green-600 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${donationStats.directDonations.percentage}%` }}
                   ></div>
                 </div>
                 <span className="text-sm font-medium text-gray-800">{donationStats.directDonations.count}</span>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Randomized Donations</span>
               <div className="flex items-center space-x-3">
                 <div className="w-24 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-purple-600 h-2 rounded-full transition-all duration-500" 
+                  <div
+                    className="bg-purple-600 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${donationStats.randomizedDonations.percentage}%` }}
                   ></div>
                 </div>
@@ -270,11 +269,10 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
               topCharities.map((charity, index) => (
                 <div key={charity.charity} className="flex justify-between items-center">
                   <div className="flex items-center space-x-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      index === 0 ? 'bg-yellow-500' : 
-                      index === 1 ? 'bg-gray-400' :
-                      index === 2 ? 'bg-orange-500' : 'bg-green-500'
-                    }`}></div>
+                    <div className={`w-3 h-3 rounded-full ${index === 0 ? 'bg-yellow-500' :
+                        index === 1 ? 'bg-gray-400' :
+                          index === 2 ? 'bg-orange-500' : 'bg-green-500'
+                      }`}></div>
                     <span className="text-sm text-gray-700">{charity.charity}</span>
                   </div>
                   <span className="text-sm font-medium text-gray-800">${charity.total.toFixed(2)}</span>
@@ -324,16 +322,14 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             topCharities.map((charity, index) => (
               <div key={charity.charity} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    index % 4 === 0 ? 'bg-red-100' :
-                    index % 4 === 1 ? 'bg-blue-100' :
-                    index % 4 === 2 ? 'bg-green-100' : 'bg-purple-100'
-                  }`}>
-                    <HeartSolid className={`h-5 w-5 ${
-                      index % 4 === 0 ? 'text-red-600' :
-                      index % 4 === 1 ? 'text-blue-600' :
-                      index % 4 === 2 ? 'text-green-600' : 'text-purple-600'
-                    }`} />
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${index % 4 === 0 ? 'bg-red-100' :
+                      index % 4 === 1 ? 'bg-blue-100' :
+                        index % 4 === 2 ? 'bg-green-100' : 'bg-purple-100'
+                    }`}>
+                    <HeartSolid className={`h-5 w-5 ${index % 4 === 0 ? 'text-red-600' :
+                        index % 4 === 1 ? 'text-blue-600' :
+                          index % 4 === 2 ? 'text-green-600' : 'text-purple-600'
+                      }`} />
                   </div>
                   <span className="font-medium text-gray-800">{charity.charity}</span>
                 </div>
@@ -371,7 +367,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h2>
             <p className="text-gray-600">Showing data for: {userEmail}</p>
           </div>
-          <button 
+          <button
             onClick={refreshData}
             className="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
           >
@@ -379,7 +375,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             <span className="text-sm">Refresh History</span>
           </button>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center">
@@ -392,7 +388,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center">
               <div className="bg-blue-100 rounded-full p-3 mr-4">
@@ -404,7 +400,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center">
               <div className="bg-purple-100 rounded-full p-3 mr-4">
@@ -416,7 +412,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center">
               <div className="bg-orange-100 rounded-full p-3 mr-4">
@@ -440,39 +436,36 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             {activeTab === 'impact' && 'Your Impact'}
           </h3>
           <div className="flex space-x-4 text-sm">
-            <button 
+            <button
               onClick={() => setActiveTab('history')}
-              className={`font-medium pb-1 transition-colors ${
-                activeTab === 'history' 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
+              className={`font-medium pb-1 transition-colors ${activeTab === 'history'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
               Donation History
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('statistics')}
-              className={`font-medium pb-1 transition-colors ${
-                activeTab === 'statistics' 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
+              className={`font-medium pb-1 transition-colors ${activeTab === 'statistics'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
               Statistics
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('impact')}
-              className={`font-medium pb-1 transition-colors ${
-                activeTab === 'impact' 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
+              className={`font-medium pb-1 transition-colors ${activeTab === 'impact'
+                  ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
               Your Impact
             </button>
           </div>
         </div>
-        
+
         {/* tab content */}
         {activeTab === 'history' && renderDonationHistory()}
         {activeTab === 'statistics' && renderStatistics()}
