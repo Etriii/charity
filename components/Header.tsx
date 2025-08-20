@@ -1,13 +1,48 @@
-import React from 'react';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/solid';
-import { HeaderProps } from '../types';
+"use client";
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal }) => {
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowRightOnRectangleIcon, UserIcon, WalletIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import { HeaderProps } from '../types';
+import { useRouter } from 'next/navigation'; 
+
+const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal, userEmail }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
   const handleLogout = () => {
     if (onLogout) {
       onLogout();
     }
+    setIsDropdownOpen(false);
   };
+
+  const handleProfileClick = () => {
+    if (userEmail) {
+      router.push(`/profile/user_profile/${userEmail.replace(/\s+/g, "-")}`);
+    }
+    setIsDropdownOpen(false);
+  };
+
+  const handleWalletClick = () => {
+    if (userEmail) {
+      router.push(`/wallet/user_wallet/${userEmail.replace(/\s+/g, "-")}`);
+    }
+    setIsDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm py-4 px-8 border-b border-gray-200">
@@ -19,14 +54,49 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal }) =>
           <span className="text-xl font-bold">DonateTransparently</span>
           <span className="ml-2 text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700 uppercase">Live Tracking</span>
         </div>
+        
         {isLoggedIn ? (
-          <button
-            onClick={handleLogout} 
-            className="bg-red-500 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-red-600 transition-colors duration-300 flex items-center space-x-2"
-          >
-            <ArrowRightOnRectangleIcon className="h-5 w-5" />
-            <span>Log Out</span>
-          </button>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <UserIcon className="h-5 w-5 text-white" />
+              </div>
+              <ChevronDownIcon className={`h-4 w-4 text-gray-600 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                <button
+                  onClick={handleProfileClick}
+                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
+                >
+                  <UserIcon className="h-4 w-4" />
+                  <span>Profile</span>
+                </button>
+                
+                <button
+                  onClick={handleWalletClick}
+                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
+                >
+                  <WalletIcon className="h-4 w-4" />
+                  <span>Wallet</span>
+                </button>
+                
+                <hr className="my-1 border-gray-200" />
+                
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors duration-150"
+                >
+                  <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                  <span>Log Out</span>
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <button
             onClick={onOpenModal}
