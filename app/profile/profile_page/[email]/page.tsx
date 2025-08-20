@@ -548,12 +548,6 @@ export default function UserProfile(): JSX.Element {
                     </div>
                     <p className="text-gray-600 text-lg mb-2">No donations yet</p>
                     <p className="text-gray-500 text-sm">Your donation history will appear here once you make a donation.</p>
-                    <button
-                      onClick={() => router.push('/donate')}
-                      className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      Make a Donation
-                    </button>
                   </div>
                 ) : (
                   <>
