@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/solid';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Modal from '@/components/Modal';
 import DonationAuthContent from '@/components/DonationAuthContent';
 import HomePage from '../components/HomePage';
-import ProfilePage from '@/components/ProfilePage';
 import LoggedInHomePage from '../components/LoggedInHomePage';
 import MessageDisplay from '@/components/MessageDisplay';
 import { Message } from '@/types';
@@ -18,14 +16,6 @@ interface User {
   email: string;
   createdAt: string;
 }
-
-const getUserStorage = (): User[] => {
-  if (typeof window !== 'undefined') {
-    const users = localStorage.getItem('donateTransparentlyUsers');
-    return users ? JSON.parse(users) : [];
-  }
-  return [];
-};
 
 const getCurrentSession = (): User | null => {
   if (typeof window !== 'undefined') {
