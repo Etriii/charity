@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal, user
 
   const handleProfileClick = () => {
     if (userEmail) {
-      router.push(`/profile/user_profile/${userEmail.replace(/\s+/g, "-")}`);
+      router.push(`/profile/profile_page/${userEmail.replace(/\s+/g, "-")}`);
     }
     setIsDropdownOpen(false);
   };
