@@ -1,5 +1,6 @@
 // TestimonialCard.tsx
 import React from 'react';
+import Image from 'next/image';
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
 
 interface TestimonialCardProps {
@@ -18,9 +19,11 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ quote, author, title,
       </div>
       
       <div className="flex items-center mt-6">
-        <img 
+        <Image 
           src={imageSrc} 
           alt={author}
+          width={48}
+          height={48}
           className="w-12 h-12 rounded-full mr-4 object-cover"
           onError={(e) => {
             e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(author)}&background=e5e7eb&color=374151&size=48`;

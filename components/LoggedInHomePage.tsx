@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-    HeartIcon,
     UserGroupIcon,
-    BuildingOfficeIcon,
-    EyeIcon,
-    ArrowPathIcon,
-    CalendarIcon,
-    GiftIcon
+    EyeIcon
 } from '@heroicons/react/24/outline';
 import {
     HeartIcon as HeartSolid,
@@ -16,7 +11,6 @@ import CharityCard from './CharityCard';
 import { Message } from '@/types';
 import { Dispatch, SetStateAction } from 'react';
 import DashboardTab from './DashboardTab';
-import Link from 'next/link';
 
 interface LoggedInHomePageProps {
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
