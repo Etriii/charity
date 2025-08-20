@@ -78,12 +78,12 @@ export default function App() {
     setCurrentSession(undefined);
     setIsLoggedIn(false);
     setCurrentUser(undefined);
-    
+
     setMainMessage({
       type: 'info',
       text: 'You have been logged out successfully.'
     });
-    
+
     setTimeout(() => {
       setMainMessage(null);
     }, 3000);
@@ -91,23 +91,23 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900 antialiased">
-      <Header 
+      <Header
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
         onOpenModal={() => setIsModalOpen(true)}
-        userEmail={currentUser?.email} 
+        userEmail={currentUser?.email}
       />
 
       <MessageDisplay message={mainMessage} />
 
       {isLoggedIn ? (
-        <LoggedInHomePage 
+        <LoggedInHomePage
           setIsModalOpen={setIsModalOpen}
           setMainMessage={setMainMessage}
           userName={currentUser?.username || "User"}
         />
       ) : (
-        <HomePage 
+        <HomePage
           setIsModalOpen={setIsModalOpen}
           setMainMessage={setMainMessage}
         />
@@ -120,7 +120,7 @@ export default function App() {
         onClose={() => setIsModalOpen(false)}
         title=""
       >
-        <DonationAuthContent 
+        <DonationAuthContent
           onClose={() => setIsModalOpen(false)}
           onLoginSuccess={handleLoginSuccess}
           onLogout={handleLogout}
