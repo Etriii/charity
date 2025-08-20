@@ -13,7 +13,7 @@ type Donation = {
   anonymous?: boolean;
 };
 
-//cute si Joy 
+
 
 interface User {
   username: string;
