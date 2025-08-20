@@ -42,6 +42,7 @@ export interface HeaderProps {
   isLoggedIn: boolean;
   onLogout: () => void;
   onOpenModal: () => void;
+   userEmail?: string;
 }
 
 export interface MessageDisplayProps {
