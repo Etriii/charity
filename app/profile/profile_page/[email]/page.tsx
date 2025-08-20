@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { Pencil, ArrowLeft, User, Mail, Calendar, DollarSign, Shield, Heart, Globe, CreditCard, Loader2, X } from "lucide-react";
+import { Pencil, ArrowLeft, User, DollarSign, Shield, Heart, Loader2, X } from "lucide-react";
 import Link from "next/link";
 
 type Donation = {
@@ -189,8 +189,8 @@ export default function UserProfile(): JSX.Element {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [editingField, setEditingField] = useState<"name" | "email" | null>(null);
-  const isEditing = editingField !== null;
 
   // temporary values while editing
   const [tempName, setTempName] = useState<string>("");
@@ -275,15 +275,6 @@ export default function UserProfile(): JSX.Element {
       setEmailValidationError("");
     }
   }, [tempEmail, user.email]);
-
-  // begins editing a field
-  const startEditing = (field: "name" | "email") => {
-    setEditingField(field);
-    setTempName(user.name);
-    setTempEmail(user.email);
-    setSaveMessage(null);
-    setEmailValidationError("");
-  };
 
   // cancels editing (revert temp values)
   const handleCancel = () => {

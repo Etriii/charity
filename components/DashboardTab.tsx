@@ -105,6 +105,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('donationAdded', handleDonationUpdate);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userEmail]); // re-runs when email changes
 
   // cal stats from user's donations

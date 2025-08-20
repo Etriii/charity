@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { use } from "react";
@@ -9,8 +8,6 @@ import { Calendar, MapPin, Tag, DollarSign } from "lucide-react";
 import {
   CalendarIcon,
   MapPinIcon,
-  UserGroupIcon,
-  CurrencyDollarIcon,
 } from "@heroicons/react/24/solid";
 
 type Donation = {
@@ -203,10 +200,12 @@ export default function CharityPage({ params }: PageProps) {
         {/* Profile header */}
         <div className="absolute bottom-5  w-full">
           <div className="container mx-auto -mt-12  pl-15 px-8 flex items-center">
-            <img
-              src={`${charity.profile_image}`}
+            <Image
+              src={charity.profile_image}
               alt={`${charity.name} logo`}
-              className="w-28 h-28 rounded-full border-4 border-white shadow-md"
+              width={112}
+              height={112}
+              className="w-28 h-28 rounded-full border-4 border-white shadow-md object-cover"
             />
             <div className="ml-6 text-white">
               <h1 className="text-3xl font-extrabold">{charity.name}</h1>
