@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Get current session user 
+  //get current session user
   const currentUser = getCurrentSession();
 
   const handleLogout = () => {
