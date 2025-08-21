@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal, user
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
           <span className="text-xl font-bold">DonateTransparently</span>
-          <span className="ml-2 text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700 uppercase">Live Tracking</span>
+          <span className="ml-2 text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700 uppercase opacity-0 sm:opacity-100">Live Tracking</span>
         </div>
 
         {isLoggedIn ? (
@@ -61,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal, user
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="cursor-pointer shadow-lg border border-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              <div className="size-9 bg-blue-600 rounded-full flex items-center justify-center relative">
+              <div className="size-9 bg-gradient-to-br from-violet-600 to-blue-600 rounded-full flex items-center justify-center relative">
                 <UserIcon className="size-6 text-white" />
                 <ChevronDownIcon className={`absolute rounded-full bg-white bottom-[-2px] right-[-2px] p-[.8px] size-[14px] text-gray-600 border border-gray-600 font-bold transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </div>
@@ -103,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, onLogout, onOpenModal, user
         ) : (
           <button
             onClick={onOpenModal}
-            className="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
+            className="bg-gradient-to-r cursor-pointer text-nowrap from-purple-600 to-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
           >
             Sign In
           </button>

@@ -9,8 +9,6 @@ import { Calendar, MapPin, Tag, DollarSign } from "lucide-react";
 import {
   CalendarIcon,
   MapPinIcon,
-  UserGroupIcon,
-  CurrencyDollarIcon,
 } from "@heroicons/react/24/solid";
 
 type Donation = {
@@ -203,10 +201,13 @@ export default function CharityPage({ params }: PageProps) {
         {/* Profile header */}
         <div className="absolute bottom-5  w-full">
           <div className="container mx-auto -mt-12  pl-15 px-8 flex items-center">
-            <img
-              src={`${charity.profile_image}`}
+            <Image
+              src={charity.profile_image}
               alt={`${charity.name} logo`}
+              width={112}
+              height={112}
               className="w-28 h-28 rounded-full border-4 border-white shadow-md"
+              priority
             />
             <div className="ml-6 text-white">
               <h1 className="text-3xl font-extrabold">{charity.name}</h1>
@@ -278,7 +279,7 @@ export default function CharityPage({ params }: PageProps) {
             </div>
 
             <div className="ml-auto text-center">
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition">
+              <button className="bg-gradient-to-r cursor-pointer from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition">
                 Donate Now
               </button>
             </div>

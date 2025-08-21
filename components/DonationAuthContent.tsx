@@ -253,7 +253,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
   const allUsers = storage.getUsers();
 
   return (
-    <div className="px-6 bg-white rounded-lg">
+    <div className="px-6 w-full bg-white rounded-lg">
       <div className="space-y-4">
         {message && (
           <div className={`rounded-xl border-2 ${message.type === 'success' ? 'border-green-400 bg-green-50' : message.type === 'error' ? 'border-red-400 bg-red-50' : 'border-blue-400 bg-blue-50'}`}>
@@ -288,14 +288,14 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                   className={`py-2 px-4 rounded-full transition-colors duration-200 flex items-center justify-center ${activeTab === 'login' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <LogInIcon />
-                  <span className="ml-2">Log In</span>
+                  <span className="ml-2 text-nowrap">Log In</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('register')}
                   className={`py-2 px-4 rounded-full transition-colors duration-200 flex items-center justify-center ${activeTab === 'register' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <UserPlusIconComponent />
-                  <span className="ml-2">Create Account</span>
+                  <span className="ml-2 text-nowrap">Create Account</span>
                 </button>
               </div>
 

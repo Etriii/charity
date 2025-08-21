@@ -10,14 +10,9 @@ import HomePage from '../components/HomePage';
 import ProfilePage from '@/components/ProfilePage';
 import LoggedInHomePage from '../components/LoggedInHomePage';
 import MessageDisplay from '@/components/MessageDisplay';
-import { Message } from '@/types';
+import { Message, User } from '@/types';
 
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  createdAt: string;
-}
+
 
 const getUserStorage = (): User[] => {
   if (typeof window !== 'undefined') {

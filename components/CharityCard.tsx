@@ -12,22 +12,22 @@ interface CharityCardProps {
   isLoggedIn: boolean;
 }
 
-const CharityCard: React.FC<CharityCardProps> = ({ 
-  name, 
-  description, 
-  received, 
-  organizations, 
-  setIsModalOpen, 
-  isLoggedIn 
+const CharityCard: React.FC<CharityCardProps> = ({
+  name,
+  description,
+  received,
+  organizations,
+  setIsModalOpen,
+  isLoggedIn
 }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
 
-  
+
   const handleDonateClick = () => {
     if (!isLoggedIn) {
-      setIsModalOpen(true); 
+      setIsModalOpen(true);
     } else {
-      setIsDonationModalOpen(true); 
+      setIsDonationModalOpen(true);
     }
   };
 
@@ -37,7 +37,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
         <div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">{name}</h3>
           <p className="text-gray-600 mb-4 leading-relaxed">{description}</p>
-          
+
           <div className="mb-4">
             <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
               Total Received
@@ -46,7 +46,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
               ${received.toLocaleString()}
             </p>
           </div>
-          
+
           <div className="mb-6">
             <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
               Organizations
@@ -61,19 +61,19 @@ const CharityCard: React.FC<CharityCardProps> = ({
             </ul>
           </div>
         </div>
-        
-        <div className="flex space-x-4 mt-auto">
+
+        <div className="sm:flex space-x-4 mt-auto space-y-2">
           <button
             onClick={handleDonateClick}
-            className="flex-1 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center space-x-2"
+            className="flex-1 bg-gradient-to-r w-full cursor-pointer from-purple-600 to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center space-x-2"
           >
             <HeartIcon className="h-4 w-4" />
-            <span>Donate Now</span>
+            <span className=' text-nowrap'>Donate Now</span>
           </button>
-          
+
           <Link
             href={`/charity/charity_profile/${name.replace(/\s+/g, "-")}`}
-            className="flex-1 bg-gray-100 text-gray-700 font-medium py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center flex items-center justify-center"
+            className="flex-1 text-nowrap bg-gray-100 text-gray-700 font-medium py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center flex items-center justify-center"
           >
             View Profile
           </Link>
