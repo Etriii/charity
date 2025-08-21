@@ -10,9 +10,11 @@ export interface ModalProps {
 }
 
 export interface User {
-  id: string;
-  username: string;
+  id?: string;
+  username?: string;
   email: string;
+  password?: string;
+  balance:number;
   createdAt: string;
 }
 

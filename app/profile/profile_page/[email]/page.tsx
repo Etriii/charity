@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { Pencil, ArrowLeft, User, DollarSign, Shield, Heart, Loader2, X } from "lucide-react";
 import Link from "next/link";
+import Wallet from "@/components/Wallet";
 
 type Donation = {
   organization: string;
@@ -19,6 +20,7 @@ interface User {
   username: string;
   email: string;
   password: string;
+  balance: number;
   id: string;
   createdAt: string;
 }
@@ -27,6 +29,7 @@ type UserType = {
   name: string;
   email: string;
   profileImage: string;
+  balance: number;
   donationHistory: Donation[];
   readonly createdAt: string;
 };
@@ -57,7 +60,7 @@ const setUsersInStorage = (users: User[]) => {
   }
 };
 
-const getCurrentSession = (): User | null => {
+export const getCurrentSession = (): User | null => {
   if (typeof window !== 'undefined') {
     const userJson = localStorage.getItem('donateTransparentlyCurrentUser');
     return userJson ? JSON.parse(userJson) : null;
@@ -183,9 +186,9 @@ export default function UserProfile(): JSX.Element {
     name: "",
     email: "",
     profileImage: "/images/default_user.jpg",
+    balance: 0,
     donationHistory: [],
     createdAt: new Date().toISOString(),
-
   });
 
   const [loading, setLoading] = useState(true);
@@ -228,6 +231,7 @@ export default function UserProfile(): JSX.Element {
         email: foundUser.email,
         profileImage: "/images/default_user.jpg",
         donationHistory: userDonations,
+        balance: foundUser.balance,
         createdAt: new Date(foundUser.createdAt).toLocaleDateString("en-US", {
           year: "numeric",
           month: "numeric",
@@ -534,7 +538,10 @@ export default function UserProfile(): JSX.Element {
             </div>
           </div>
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
+            <div>
+              <Wallet user={user} getUsers={getUsersFromStorage}/>
+            </div>
             {/* donation history card */}
             <div className="bg-white rounded-2xl shadow-md overflow-hidden h-full">
               <div className="p-6">

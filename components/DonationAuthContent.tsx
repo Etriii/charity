@@ -2,19 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { ArrowRightOnRectangleIcon, UserPlusIcon, CheckCircleIcon, XCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import { User } from '@/types';
 
 interface Message {
   type: 'success' | 'error' | 'info';
   text: string;
 }
 
-interface User {
-  username: string;
-  email: string;
-  password: string;
-  id: string;
-  createdAt: string;
-}
 
 interface DonationAuthContentProps {
   onClose: () => void;
@@ -214,6 +208,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
         email: registerEmail,
         password: hashPassword(registerPassword), // hashes pass
         id: Math.random().toString(36).substring(2, 15),
+        balance: 5000,
         createdAt: new Date().toISOString()
       };
 
