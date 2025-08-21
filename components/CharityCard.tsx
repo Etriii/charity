@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { HeartIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/solid';
-import DonationModal from './DonationModal';
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { HeartIcon, MapPinIcon, CalendarIcon } from "@heroicons/react/24/solid";
+import DonationModal from "./DonationModal";
 
 interface CharityCardProps {
   name: string;
@@ -35,7 +35,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
   donorCount = 4,
   coverImage,
   logo,
-  onDonateClick
+  onDonateClick,
 }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
 
@@ -57,7 +57,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
           <div className="h-48 bg-gradient-to-br from-purple-500 to-pink-600 relative overflow-hidden rounded-t-2xl">
             {(image || coverImage) && (
               <Image
-                src={image || coverImage || ''}
+                src={image || coverImage || ""}
                 alt={`${name} cover image`}
                 fill
                 className="object-cover"
@@ -75,10 +75,10 @@ const CharityCard: React.FC<CharityCardProps> = ({
         <div className="p-6 flex flex-col flex-grow">
           {/* Header with logo & title */}
           <div className="flex items-center space-x-3 mb-3">
-            <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center relative overflow-hidden">
+            <div className="h-14 w-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center relative overflow-hidden -translate-y-2">
               {logo && (
-                <Image 
-                  src={logo} 
+                <Image
+                  src={logo}
                   alt={`${name} logo`}
                   fill
                   className="object-cover rounded-full"
@@ -86,14 +86,22 @@ const CharityCard: React.FC<CharityCardProps> = ({
                 />
               )}
               {!logo && (
-                <span className="text-white font-bold text-lg">{name.charAt(0)}</span>
+                <span className="text-white font-bold text-lg">
+                  {name.charAt(0)}
+                </span>
               )}
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-800 leading-tight">{name}</h3>
+              <h3 className="text-lg font-bold text-gray-800 leading-tight">
+                {name}
+              </h3>
               <div className="flex items-center text-sm text-gray-500 mt-1">
                 <MapPinIcon className="h-3 w-3 mr-1" />
                 {location}
+              </div>
+              <div className="flex items-center text-xs text-gray-500 mb-4">
+                <CalendarIcon className="h-3 w-3 mr-1" />
+                Established {establishedYear}
               </div>
             </div>
           </div>
@@ -104,16 +112,23 @@ const CharityCard: React.FC<CharityCardProps> = ({
 
           {/* Organizations */}
           <div className="mb-4">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Organizations:</h4>
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">
+              Organizations:
+            </h4>
             <div className="flex flex-wrap gap-2">
               {organizations && organizations.length > 0 ? (
                 organizations.map((org, index) => (
-                  <div key={index} className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
+                  <div
+                    key={index}
+                    className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded"
+                  >
                     {org}
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-gray-400 italic">No organizations listed</div>
+                <div className="text-xs text-gray-400 italic">
+                  No organizations listed
+                </div>
               )}
             </div>
           </div>
@@ -127,14 +142,11 @@ const CharityCard: React.FC<CharityCardProps> = ({
               <div className="text-gray-600 text-xs">Total Raised</div>
             </div>
             <div className="text-center p-3 bg-pink-50 rounded-lg">
-              <div className="font-bold text-pink-700 text-lg">{donorCount}</div>
+              <div className="font-bold text-pink-700 text-lg">
+                {donorCount}
+              </div>
               <div className="text-gray-600 text-xs">Donors</div>
             </div>
-          </div>
-
-          <div className="flex items-center text-xs text-gray-500 mb-4">
-            <CalendarIcon className="h-3 w-3 mr-1" />
-            Established {establishedYear}
           </div>
 
           {/* Action buttons */}
