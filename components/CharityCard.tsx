@@ -46,7 +46,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
 
   return (
     <>
-      <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col">
         {/* cover */}
         <div className="relative">
           <div
@@ -64,7 +64,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
           </div>
         </div>
 
-        <div className="p-6">
+          <div className="p-6 flex flex-col flex-grow">
           {/* header w/ logo & title */}
           <div className="flex items-center space-x-3 mb-3">
             <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
@@ -91,11 +91,17 @@ const CharityCard: React.FC<CharityCardProps> = ({
 
           <h4 className="text-sm font-semibold text-gray-700 mb-2">Organizations:</h4>
           <div className="space-y-1 mb-4">
-            {organizations.map((org, index) => (
-              <div key={index} className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
-                {org}
-              </div>
-            ))}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {organizations && organizations.length > 0 ? (
+                organizations.map((org) => (
+                  <div key={org} className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
+                    {org}
+                  </div>
+                ))
+              ) : (
+                <div className="text-xs text-gray-400 italic">No organizations listed</div>
+              )}
+            </div>
           </div>
 
           {/* stats grid */}
@@ -117,7 +123,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
             Established {establishedYear}
           </div>
 
-          <div className="flex space-x-3">
+            <div className="flex space-x-3 mt-auto pt-4">
             <Link
               href={`/charity/charity_profile/${name.replace(/\s+/g, "-")}`}
               className="flex-1 text-sm bg-gray-100 text-gray-700 font-medium py-2.5 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center flex items-center justify-center"
