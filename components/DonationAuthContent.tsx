@@ -16,17 +16,6 @@ interface DonationAuthContentProps {
   onLogout?: () => void;
 }
 
-//basic hash
-const hashPassword = (password: string): string => {
-  let hash = 0;
-  for (let i = 0; i < password.length; i++) {
-    const char = password.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash).toString(36);
-};
-
 export const getUsersFromStorage = (): User[] => {
   if (typeof window !== 'undefined') {
     const usersJson = localStorage.getItem('donateTransparentlyUsers');
@@ -94,7 +83,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
     validateUser: (email: string, password: string): User | null => {
       const users = getUsersFromStorage();
       const user = users.find((user: User) => user.email.toLowerCase() === email.toLowerCase());
-      if (user && user.password && user.password === hashPassword(password)) {
+      if (user && user.password && user.password === password) {
         return user;
       }
       return null;
@@ -142,7 +131,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
       }
 
       // validates password
-      if (existingUser.password !== hashPassword(loginPassword)) {
+      if (existingUser.password !== loginPassword) {
         setMessage({
           type: 'error',
           text: 'Incorrect password. Please try again.'
@@ -206,7 +195,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
       const newUser: User = {
         username: registerUsername,
         email: registerEmail,
-        password: hashPassword(registerPassword), // hashes pass
+        password: registerPassword, 
         id: Math.random().toString(36).substring(2, 15),
         balance: 5000,
         createdAt: new Date().toISOString()
@@ -475,7 +464,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                   <strong>Registered Users:</strong>
                   {allUsers.map((user, idx) => (
                     <div key={idx} className="ml-2">
-                      • {user.username} ({user.email}) - Password Hash: {user.password ? user.password.substring(0, 8) + '...' : 'No password set'}
+                      • {user.username} ({user.email}) - Password: {user.password}
                     </div>
                   ))}
                 </div>
