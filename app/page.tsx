@@ -1,31 +1,32 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Modal from '@/components/Modal';
-import DonationAuthContent from '@/components/DonationAuthContent';
-import HomePage from '../components/HomePage';
-import LoggedInHomePage from '../components/LoggedInHomePage';
-import MessageDisplay from '@/components/MessageDisplay';
-import { Message, User } from '@/types';
-
-
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Modal from "@/components/Modal";
+import DonationAuthContent from "@/components/DonationAuthContent";
+import HomePage from "../components/HomePage";
+import LoggedInHomePage from "../components/LoggedInHomePage";
+import MessageDisplay from "@/components/MessageDisplay";
+import { Message, User } from "@/types";
 
 const getCurrentSession = (): User | null => {
-  if (typeof window !== 'undefined') {
-    const user = localStorage.getItem('donateTransparentlyCurrentUser');
+  if (typeof window !== "undefined") {
+    const user = localStorage.getItem("donateTransparentlyCurrentUser");
     return user ? JSON.parse(user) : null;
   }
   return null;
 };
 
 const setCurrentSession = (user?: User) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     if (user) {
-      localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(user));
+      localStorage.setItem(
+        "donateTransparentlyCurrentUser",
+        JSON.stringify(user)
+      );
     } else {
-      localStorage.removeItem('donateTransparentlyCurrentUser');
+      localStorage.removeItem("donateTransparentlyCurrentUser");
     }
   }
 };
@@ -51,8 +52,8 @@ export default function App() {
       setCurrentUser(user);
       setIsModalOpen(false);
       setMainMessage({
-        type: 'success',
-        text: `Welcome back, ${user.username}!`
+        type: "success",
+        text: `Welcome back, ${user.username}!`,
       });
     }
 
@@ -65,8 +66,8 @@ export default function App() {
     setCurrentUser(undefined);
 
     setMainMessage({
-      type: 'info',
-      text: 'You have been logged out successfully.'
+      type: "info",
+      text: "You have been logged out successfully.",
     });
 
     setTimeout(() => {
@@ -77,42 +78,43 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900 antialiased">
       <div className="max-w-7xl mx-auto">
-      <Header
-        isLoggedIn={isLoggedIn}
-        onLogout={handleLogout}
-        onOpenModal={() => setIsModalOpen(true)}
-        userEmail={currentUser?.email}
-      />
-
-      <MessageDisplay message={mainMessage} />
-
-      {isLoggedIn ? (
-        <LoggedInHomePage
-          setIsModalOpen={setIsModalOpen}
-          setMainMessage={setMainMessage}
-          userName={currentUser?.username || "User"}
-        />
-      ) : (
-        <HomePage
-          setIsModalOpen={setIsModalOpen}
-          setMainMessage={setMainMessage}
-        />
-      )}
-
-      <Footer />
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title=""
-      >
-        <DonationAuthContent
-          onClose={() => setIsModalOpen(false)}
-          onLoginSuccess={handleLoginSuccess}
+        <Header
+          isLoggedIn={isLoggedIn}
           onLogout={handleLogout}
+          onOpenModal={() => setIsModalOpen(true)}
+          userEmail={currentUser?.email}
         />
-      </Modal>
-         </div>
+
+        <MessageDisplay message={mainMessage} />
+
+        {isLoggedIn ? (
+          <LoggedInHomePage
+            setIsModalOpen={setIsModalOpen}
+            setMainMessage={setMainMessage}
+            userName={currentUser?.username || "User"}
+          />
+        ) : (
+          <HomePage
+            setIsModalOpen={setIsModalOpen}
+            setMainMessage={setMainMessage}
+          />
+        )}
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title=""
+        >
+          <DonationAuthContent
+            onClose={() => setIsModalOpen(false)}
+            onLoginSuccess={handleLoginSuccess}
+            onLogout={handleLogout}
+          />
+        </Modal>
+      </div>
+      <br>
+      </br>
+      <Footer />
     </div>
   );
 }
