@@ -33,6 +33,16 @@ interface Donation {
     type: string;
 }
 
+interface Charity {
+    name: string;
+    description: string;
+    received: number;
+    organizations: string[];
+    likes: number;
+     image: string;
+}
+
+
 const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
     setIsModalOpen,
     setMainMessage,
@@ -158,71 +168,81 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
     }, [defaultEmail, defaultName, userEmail, today]);
 
     // cal charity stats
-    const getCharityStats = (charityName: string) => {
-        try {
-            const donationsData = localStorage.getItem('donations');
-            if (donationsData) {
-                const allDonations: Donation[] = JSON.parse(donationsData);
-                const charityDonations = allDonations.filter(
-                    donation => donation.charity === charityName
-                );
-                
-                const totalReceived = charityDonations.reduce(
-                    (sum, donation) => sum + donation.amount, 0
-                );
-                
-                const uniqueOrganizations = new Set(
-                    charityDonations.map(donation => donation.organization)
-                );
-                
-                return {
-                    received: totalReceived,
-                    organizations: Array.from(uniqueOrganizations)
-                };
-            }
-        } catch (error) {
-            console.error('Error calculating charity stats:', error);
-        }
-        
-        return { received: 0, organizations: [] };
+  const getCharityReceivedAmount = (charityName: string): number => {
+  try {
+    const donationsData = localStorage.getItem('donations');
+    if (donationsData) {
+      const allDonations: Donation[] = JSON.parse(donationsData);
+      const charityDonations = allDonations.filter(
+        (donation) => donation.charity === charityName
+      );
+      return charityDonations.reduce(
+        (sum, donation) => sum + donation.amount, 0
+      );
+    }
+  } catch (error) {
+    console.error('Error calculating charity received amount:', error);
+  }
+  return 0;
+};
+
+    const charityOrganizationsData = {
+        "UNICEF": ["UNICEF USA", "UNICEF International"],
+        "Red Cross": ["American Red Cross", "International Red Cross"],
+        "Doctors Without Borders (MSF)": ["MSF USA", "MSF International"],
+        "World Wildlife Fund (WWF)": ["WWF-US", "WWF International"],
+        "Salvation Army": ["The Salvation Army USA", "The Salvation Army International"],
+        "Oxfam": ["Oxfam America", "Oxfam International"],
     };
 
-    const charities = [
+    const charities: Charity[] = [
         {
             name: "UNICEF",
             description: "United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
-            ...getCharityStats("UNICEF"),
-            likes: 2
+            received: getCharityReceivedAmount("UNICEF"),
+            organizations: charityOrganizationsData["UNICEF"],
+            likes: 2,
+            image: "/images/UNICEFBG.jpg",
         },
         {
             name: "Red Cross",
             description: "International humanitarian movement providing emergency assistance, disaster relief, and health education.",
-            ...getCharityStats("Red Cross"),
-            likes: 2
+            received: getCharityReceivedAmount("Red Cross"),
+            organizations: charityOrganizationsData["Red Cross"],
+            likes: 2,
+            image: "/images/RCbg1.jpg",
         },
         {
             name: "Doctors Without Borders (MSF)",
             description: "Medical humanitarian organization delivering emergency aid to people affected by conflict, epidemics, disasters.",
-            ...getCharityStats("Doctors Without Borders (MSF)"),
-            likes: 2
+            received: getCharityReceivedAmount("Doctors Without Borders (MSF)"),
+            organizations: charityOrganizationsData["Doctors Without Borders (MSF)"],
+            likes: 2,
+            image: "/images/MSFB.avif",
         },
         {
             name: "World Wildlife Fund (WWF)",
             description: "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
-            ...getCharityStats("World Wildlife Fund (WWF)"),
-            likes: 2
+            received: getCharityReceivedAmount("World Wildlife Fund (WWF)"),
+            organizations: charityOrganizationsData["World Wildlife Fund (WWF)"],
+            likes: 2,
+            image: "/images/WWFBG.jpg",
         },
         {
             name: "Salvation Army",
             description: "International charitable organization providing relief, rehabilitation, and community support.",
-            ...getCharityStats("Salvation Army"),
-            likes: 2
+            received: getCharityReceivedAmount("Salvation Army"),
+            organizations: charityOrganizationsData["Salvation Army"],
+            likes: 2,
+              image: "/images/SABG.jpg",
         },
         {
             name: "Oxfam",
             description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, development.",
-            ...getCharityStats("Oxfam"),
-            likes: 2
+            received: getCharityReceivedAmount("Oxfam"),
+            organizations: charityOrganizationsData["Oxfam"],
+            likes: 2,
+            image: "/images/OXFBG.jpg",
         },
     ];
 
@@ -256,7 +276,7 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
                         <div>
                             <p className="text-sm text-gray-500">Organizations</p>
                             <p className="text-2xl font-bold text-purple-600">
-                                {charities.reduce((total, charity) => total + charity.organizations.length, 0)}
+                                {charities.reduce((total, charity) => total + charity.organizations.length, 8)}
                             </p>
                         </div>
                     </div>
@@ -290,6 +310,7 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
                             organizations={charity.organizations}
                             setIsModalOpen={setIsModalOpen}
                             isLoggedIn={isLoggedIn}
+                            image={charity.image}
                         />
                     ))}
                 </div>
@@ -304,8 +325,8 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
                 <button
                     onClick={() => setActiveTab('explore')}
                     className={`pb-2 font-medium transition-colors ${activeTab === 'explore'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
                     Explore Charities
@@ -313,8 +334,8 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
                 <button
                     onClick={() => setActiveTab('dashboard')}
                     className={`pb-2 font-medium transition-colors ${activeTab === 'dashboard'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
                     My Dashboard

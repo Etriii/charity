@@ -76,6 +76,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900 antialiased">
+      <div className="max-w-7xl mx-auto">
       <Header
         isLoggedIn={isLoggedIn}
         onLogout={handleLogout}
@@ -111,6 +112,7 @@ export default function App() {
           onLogout={handleLogout}
         />
       </Modal>
+         </div>
     </div>
   );
 }

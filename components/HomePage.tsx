@@ -1,9 +1,13 @@
-import React from 'react';
-import { CubeTransparentIcon, ClipboardDocumentCheckIcon, CheckCircleIcon as HeroCheckCircleIcon } from '@heroicons/react/24/solid';
-import FeatureCard from './FeatureCard';
-import CharityCard from './CharityCard';
-import TestimonialCard from './TestimonialCard';
-import { Message } from '@/types';
+import React from "react";
+import {
+  CubeTransparentIcon,
+  ClipboardDocumentCheckIcon,
+  CheckCircleIcon as HeroCheckCircleIcon,
+} from "@heroicons/react/24/solid";
+import FeatureCard from "./FeatureCard";
+import CharityCard from "./CharityCard";
+import TestimonialCard from "./TestimonialCard";
+import { Message } from "@/types";
 
 interface HomePageProps {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -22,6 +26,7 @@ interface Charity {
   description: string;
   received: number;
   organizations: string[];
+  image: string;
 }
 
 interface Testimonial {
@@ -31,26 +36,114 @@ interface Testimonial {
   imageSrc: string;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isLoggedIn = false }) => {
+const HomePage: React.FC<HomePageProps> = ({
+  setIsModalOpen,
+  setMainMessage,
+  isLoggedIn = false,
+}) => {
   const features: Feature[] = [
-    { title: "100% Transparent", description: "Every donation is recorded on the blockchain. See real-time totals for all charities and organizations.", icon: <CubeTransparentIcon className="h-6 w-6 text-blue-500" /> },
-    { title: "Direct or Random", description: "Choose specific organizations or let us randomly distribute your donation. Anonymous options available.", icon: <ClipboardDocumentCheckIcon className="h-6 w-6 text-green-500" /> },
-    { title: "Track Your Impact", description: "View your complete donation history and see the cumulative impact of your generosity over time.", icon: <HeroCheckCircleIcon className="h-6 w-6 text-purple-500" /> },
+    {
+      title: "Complete Transparency",
+      description:
+        "Every donation is recorded on the blockchain. See real-time totals for all charities and organizations.",
+      icon: <span className="text-2xl">👁️</span>,
+    },
+    {
+      title: "Secure Donations",
+      description:
+        "Your donations are processed securely with full encryption and fraud protection.",
+      icon: <span className="text-2xl">🛡️</span>,
+    },
+    {
+      title: "Direct or Random",
+      description:
+        "Choose specific organizations or let us randomly distribute your donation. Anonymous options available.",
+      icon: <span className="text-2xl">👥</span>,
+    },
+    {
+      title: "Impact Analytics",
+      description:
+        "View your complete donation history and see the cumulative impact of your generosity over time.",
+      icon: <span className="text-2xl">📈</span>,
+    },
   ];
 
   const charities: Charity[] = [
-    { name: "UNICEF", description: "United Nations agency working in over 190 countries and territories to save children's lives, defend their rights, and help them fulfill their potential.", received: 500, organizations: ["UNICEF USA", "UNICEF International"] },
-    { name: "Red Cross", description: "International humanitarian movement providing emergency assistance, disaster relief, and disaster preparedness education.", received: 100, organizations: ["American Red Cross", "International Red Cross"] },
-    { name: "Doctors Without Borders (MSF)", description: "Medical humanitarian organization providing medical care to people affected by conflict, epidemics, disasters, or exclusion from healthcare.", received: 450, organizations: ["MSF USA", "MSF International"] },
-    { name: "World Wildlife Fund (WWF)", description: "Global nonprofit working to conserve nature and reduce the most pressing threats to the diversity of life on Earth.", received: 150, organizations: ["WWF-US", "WWF International"] },
-    { name: "Salvation Army", description: "International charitable organization that provides social services and operates thrift stores to fund its programs.", received: 210, organizations: ["The Salvation Army USA", "The Salvation Army International"] },
-    { name: "Oxfam", description: "Global movement of people working together to end the injustice of poverty, inequality, and climate change.", received: 402, organizations: ["Oxfam America", "Oxfam International"] },
+    {
+      name: "UNICEF",
+      description:
+        "United Nations agency working in over 190 countries and territories to save children's lives, defend their rights, and help them fulfill their potential.",
+      received: 500,
+      organizations: ["UNICEF USA", "UNICEF International"],
+      image: "/images/UNICEFBG.jpg",
+    },
+    {
+      name: "Red Cross",
+      description:
+        "International humanitarian movement providing emergency assistance, disaster relief, and disaster preparedness education.",
+      received: 100,
+      organizations: ["American Red Cross", "International Red Cross"],
+      image: "/images/RCbg1.jpg",
+    },
+    {
+      name: "Doctors Without Borders (MSF)",
+      description:
+        "Medical humanitarian organization providing medical care to people affected by conflict, epidemics, disasters, or exclusion from healthcare.",
+      received: 450,
+      organizations: ["MSF USA", "MSF International"],
+      image: "/images/MSFB.avif",
+    },
+    {
+      name: "World Wildlife Fund (WWF)",
+      description:
+        "Global nonprofit working to conserve nature and reduce the most pressing threats to the diversity of life on Earth.",
+      received: 150,
+      organizations: ["WWF-US", "WWF International"],
+      image: "/images/WWFBG.jpg",
+    },
+    {
+      name: "Salvation Army",
+      description:
+        "International charitable organization that provides social services and operates thrift stores to fund its programs.",
+      received: 210,
+      organizations: [
+        "The Salvation Army USA",
+        "The Salvation Army International",
+      ],
+      image: "/images/SABG.jpg",
+    },
+    {
+      name: "Oxfam",
+      description:
+        "Global movement of people working together to end the injustice of poverty, inequality, and climate change.",
+      received: 402,
+      organizations: ["Oxfam America", "Oxfam International"],
+      image: "/images/OXFBG.jpg",
+    },
   ];
 
   const testimonials: Testimonial[] = [
-    { quote: "Donating through this platform gave me peace of mind knowing exactly where my money went. The transparency is incredible!", author: "Jane Doe", title: "Satisfied Donor", imageSrc: "https://placehold.co/200x200/cccccc/000000?text=Jane" },
-    { quote: "I love that I can see exactly where my money goes in real-time. It makes charitable giving feel more impactful and meaningful.", author: "John Smith", title: "Community Advocate", imageSrc: "https://placehold.co/200x200/cccccc/000000?text=John" },
-    { quote: "A truly innovative approach to philanthropy. The blockchain technology ensures complete accountability and transparency.", author: "Emily Chen", title: "Philanthropy Expert", imageSrc: "https://placehold.co/200x200/cccccc/000000?text=Emily" },
+    {
+      quote:
+        "Donating through this platform gave me peace of mind knowing exactly where my money went. The transparency is incredible!",
+      author: "Jane Doe",
+      title: "Satisfied Donor",
+      imageSrc: "/images/default_user.jpg",
+    },
+    {
+      quote:
+        "I love that I can see exactly where my money goes in real-time. It makes charitable giving feel more impactful and meaningful.",
+      author: "John Smith",
+      title: "Community Advocate",
+      imageSrc: "/images/default_user.jpg",
+    },
+    {
+      quote:
+        "A truly innovative approach to philanthropy. The blockchain technology ensures complete accountability and transparency.",
+      author: "Emily Chen",
+      title: "Philanthropy Expert",
+      imageSrc: "/images/default_user.jpg",
+    },
   ];
 
   const handleDonateClick = () => {
@@ -60,8 +153,8 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isL
       console.log("Proceeding to donation flow...");
       if (setMainMessage) {
         setMainMessage({
-          type: 'info',
-          text: 'Donation flow coming soon!'
+          type: "info",
+          text: "Donation flow coming soon!",
         });
       }
     }
@@ -72,31 +165,72 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isL
       {/* hero */}
       <section className="text-center mb-16 mt-16">
         <h1 className="text-5xl font-extrabold tracking-tight mb-4">
-          Donate with Complete <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-blue-600">Transparency</span>
+          Donate with Complete{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-br from-purple-500 to-pink-600">
+            Transparency
+          </span>
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-          Track every donation in real-time. See exactly where your money goes and the impact you are making across 6 trusted charity organizations.
+          Track every donation in real-time. See exactly where your money goes
+          and the impact you are making across 6 trusted charity organizations.
         </p>
         <div className="flex justify-center space-x-4">
           <button
             onClick={handleDonateClick}
-            className="bg-gradient-to-r cursor-pointer from-purple-600 to-blue-600 text-white font-bold py-4 px-12 rounded-lg text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
+            className="bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold py-4 px-12 rounded-lg text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
           >
-            {isLoggedIn ? 'Make a Donation' : 'Start Donating'}
+            {isLoggedIn ? "Make a Donation" : "Start Donating"}
           </button>
         </div>
       </section>
 
-      {/* features */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-        {features.map((feature, index) => (
-          <FeatureCard key={index} {...feature} />
-        ))}
+      {/* stats section */}
+      <section>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+          <div className="flex flex-col items-center">
+            <span className="text-4xl">🎁</span>
+            <h3 className="text-2xl font-bold">$200k+</h3>
+            <p className="text-gray-600">Total Donated</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-4xl">👥</span>
+            <h3 className="text-2xl font-bold">564+</h3>
+            <p className="text-gray-600">Donors</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-4xl">❤️</span>
+            <h3 className="text-2xl font-bold">6</h3>
+            <p className="text-gray-600">Charities</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-4xl">👁️</span>
+            <h3 className="text-2xl font-bold">100%</h3>
+            <p className="text-gray-600">Transparency</p>
+          </div>
+          <br></br>
+        </div>
+      </section>
+
+      {/* Why Choose CharityFlow */}
+      <section className="mb-24">
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Why Choose CharityFlow?
+        </h2>
+        <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
+          Built for transparency, security, and maximum impact
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-5 ">
+          {features.map((feature, index) => (
+            <FeatureCard key={index} {...feature} />
+          ))}
+        </div>
       </section>
 
       {/* charities */}
       <section className="mb-24">
-        <h2 className="text-3xl font-bold text-center mb-12">Live Charity Statistics</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Featured Charities
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {charities.map((charity, index) => (
             <CharityCard
@@ -107,6 +241,7 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isL
               organizations={charity.organizations}
               setIsModalOpen={setIsModalOpen}
               isLoggedIn={isLoggedIn}
+              image={charity.image}
             />
           ))}
         </div>
@@ -114,7 +249,9 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isL
 
       {/* testimonials */}
       <section className="mb-24">
-        <h2 className="text-3xl font-bold text-center mb-12">What Our Donors Say</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">
+          What Our Donors Say
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard key={index} {...testimonial} />
