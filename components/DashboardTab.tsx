@@ -1,5 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowPathIcon, GiftIcon, CalendarIcon, ChartBarIcon, ArrowTrendingUpIcon, HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
+import {
+  ResponsiveContainer,
+  XAxis,
+  LineChart,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Line,
+} from "recharts";
 
 type Donation = {
   amount: number;
@@ -10,6 +19,14 @@ type Donation = {
   anonymous: boolean;
   email: string;
   datetime: string;
+};
+
+type DonationGroup = {
+  label: string;
+  key: string;
+  total: number;
+  count: number;
+  donations: Donation[];
 };
 
 interface DashboardTabProps {
@@ -25,6 +42,61 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
     charitiesSupported: 0,
     memberSince: "",
   });
+
+  //cal timeline
+  const [view, setView] = useState<"day" | "week" | "month" | "year">("month");
+
+  const timelineData = useMemo(() => {
+    if (!donations || donations.length === 0) return [];
+
+    const groupedData = donations.reduce<Record<string, DonationGroup>>((acc, donation) => {
+      const date = new Date(donation.date);
+
+      let key = "";
+      let label = "";
+
+      if (view === "day") {
+        key = date.toISOString().split("T")[0]; // YYYY-MM-DD
+        label = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      }
+      else if (view === "week") {
+        // week number
+        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+        const pastDaysOfYear = Math.floor((date.getTime() - firstDayOfYear.getTime()) / 86400000);
+        const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+
+        key = `${date.getFullYear()}-W${weekNumber}`;
+        label = `Week ${weekNumber}, ${date.getFullYear()}`;
+      }
+      else if (view === "month") {
+        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+        label = date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      }
+      else if (view === "year") {
+        key = `${date.getFullYear()}`;
+        label = key;
+      }
+
+      if (!acc[key]) {
+        acc[key] = {
+          label,
+          key,
+          total: 0,
+          count: 0,
+          donations: []
+        };
+      }
+
+      acc[key].total += donation.amount;
+      acc[key].count += 1;
+      acc[key].donations.push(donation);
+
+      return acc;
+    }, {} as Record<string, DonationGroup>);
+
+    return Object.values(groupedData).sort((a, b) => a.key.localeCompare(b.key));
+  }, [donations, view]);
+
 
   // refreshes data from localStorage
   const refreshData = () => {
@@ -105,7 +177,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('donationAdded', handleDonationUpdate);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userEmail]); // re-runs when email changes
 
   // cal stats from user's donations
@@ -171,8 +243,8 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
                 </span>
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${donation.type === "Random"
-                      ? "bg-purple-100 text-purple-700"
-                      : "bg-blue-100 text-blue-700"
+                    ? "bg-purple-100 text-purple-700"
+                    : "bg-blue-100 text-blue-700"
                     }`}
                 >
                   {donation.type}
@@ -201,7 +273,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* donations */}
-        <div className="bg-gray-50 rounded-xl p-6">
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">Donation Breakdown</h4>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -259,7 +331,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
         </div>
 
         {/* top charities */}
-        <div className="bg-gray-50 rounded-xl p-6">
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">Your Top Charities</h4>
           <div className="space-y-4">
             {topCharities.length === 0 ? (
@@ -271,8 +343,8 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
                 <div key={charity.charity} className="flex justify-between items-center">
                   <div className="flex items-center space-x-3">
                     <div className={`w-3 h-3 rounded-full ${index === 0 ? 'bg-yellow-500' :
-                        index === 1 ? 'bg-gray-400' :
-                          index === 2 ? 'bg-orange-500' : 'bg-green-500'
+                      index === 1 ? 'bg-gray-400' :
+                        index === 2 ? 'bg-orange-500' : 'bg-green-500'
                       }`}></div>
                     <span className="text-sm text-gray-700">{charity.charity}</span>
                   </div>
@@ -285,22 +357,74 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
       </div>
 
       {/* timeline */}
-      <div className="bg-gray-50 rounded-xl p-6">
+      <div className="bg-white rounded-2xl shadow-md p-6">
+       <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6">
         <h4 className="text-lg font-semibold text-gray-800 mb-4">Donation Timeline</h4>
-        <div className="flex items-center justify-center h-32 text-gray-500">
-          <ChartBarIcon className="h-8 w-8 mr-2" />
-          <span>Donation timeline visualization would go here</span>
+        <div className="flex gap-2 mb-4">
+          {["day", "week", "month", "year"].map((option) => (
+            <button
+              key={option}
+              onClick={() => setView(option as "day" | "week" | "month" | "year")}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition 
+          ${view === option ? "bg-purple-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+            >
+              {option.charAt(0).toUpperCase() + option.slice(1)}
+            </button>
+          ))}
         </div>
+
+        {timelineData.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-40 text-gray-500">
+            <ChartBarIcon className="h-10 w-10 mb-2 text-gray-300" />
+            <span className="text-sm">Start donating to see your timeline</span>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={timelineData}>
+              <defs>
+                <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#a210b9" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#c83dca" stopOpacity={0.2} />
+                </linearGradient>
+              </defs>
+
+              <XAxis dataKey="label" tick={{ fill: "#6b7280", fontSize: 12 }} />
+              <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
+
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "0.75rem",
+                  border: "1px solid #e5e7eb",
+                  backgroundColor: "white",
+                }}
+                formatter={(value) => [`$${value}`, "Amount"]}
+                labelStyle={{ color: "#374151" }}
+              />
+
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+
+              <Line
+                type="monotone"
+                dataKey="total"
+                stroke="url(#lineGradient)"
+                strokeWidth={3}
+                dot={{ r: 5, stroke: "#a210b9", strokeWidth: 2, fill: "white" }}
+                activeDot={{ r: 7, fill: "#c83dca", strokeWidth: 0 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
+         </div>
     </div>
   );
 
   const renderYourImpact = () => (
     <div className="space-y-6">
       {/* impact summary */}
-      <div className="text-center bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-          <ArrowTrendingUpIcon className="h-8 w-8 text-green-600" />
+      <div className="text-center bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
+          <ArrowTrendingUpIcon className="h-8 w-8 text-purple-600" />
         </div>
         <h4 className="text-2xl font-bold text-gray-800 mb-2">
           You have made {userStats.donationsMade} donation{userStats.donationsMade !== 1 ? 's' : ''}!
@@ -324,12 +448,12 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
               <div key={charity.charity} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${index % 4 === 0 ? 'bg-red-100' :
-                      index % 4 === 1 ? 'bg-blue-100' :
-                        index % 4 === 2 ? 'bg-green-100' : 'bg-purple-100'
+                    index % 4 === 1 ? 'bg-blue-100' :
+                      index % 4 === 2 ? 'bg-green-100' : 'bg-purple-100'
                     }`}>
                     <HeartSolid className={`h-5 w-5 ${index % 4 === 0 ? 'text-red-600' :
-                        index % 4 === 1 ? 'text-blue-600' :
-                          index % 4 === 2 ? 'text-green-600' : 'text-purple-600'
+                      index % 4 === 1 ? 'text-blue-600' :
+                        index % 4 === 2 ? 'text-green-600' : 'text-purple-600'
                       }`} />
                   </div>
                   <span className="font-medium text-gray-800">{charity.charity}</span>
@@ -440,8 +564,8 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             <button
               onClick={() => setActiveTab('history')}
               className={`font-medium pb-1 transition-colors ${activeTab === 'history'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
             >
               Donation History
@@ -449,8 +573,8 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             <button
               onClick={() => setActiveTab('statistics')}
               className={`font-medium pb-1 transition-colors ${activeTab === 'statistics'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
             >
               Statistics
@@ -458,8 +582,8 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             <button
               onClick={() => setActiveTab('impact')}
               className={`font-medium pb-1 transition-colors ${activeTab === 'impact'
-                  ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
+                ? 'text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
                 }`}
             >
               Your Impact
