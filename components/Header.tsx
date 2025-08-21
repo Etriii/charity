@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   ArrowRightOnRectangleIcon,
   UserIcon,
-  // WalletIcon,
   ChevronDownIcon,
 } from "@heroicons/react/24/solid";
 import { HeaderProps } from "../types";
@@ -21,10 +20,11 @@ const Header: React.FC<HeaderProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
+  // Get current session user 
+  const currentUser = getCurrentSession();
+
   const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    }
+    if (onLogout) onLogout();
     setIsDropdownOpen(false);
   };
 
@@ -35,32 +35,21 @@ const Header: React.FC<HeaderProps> = ({
     setIsDropdownOpen(false);
   };
 
-  // const handleWalletClick = () => {
-  //   if (userEmail) {
-  //     router.push(`/wallet/user_wallet/${userEmail.replace(/\s+/g, "-")}`);
-  //   }
-  //   setIsDropdownOpen(false);
-  // };
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/20 shadow-sm py-3 px-8 border-b border-gray-200 backdrop-blur-md">
       <div className="container mx-auto flex justify-between items-center">
+        {/* Logo */}
         <div className="flex items-center space-x-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -70,12 +59,15 @@ const Header: React.FC<HeaderProps> = ({
           >
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
-          <span className="bg-gradient-to-br from-purple-500 to-pink-600 bg-clip-text text-transparent text-xl font-bold">CharityFlow</span>
+          <span className="bg-gradient-to-br from-purple-500 to-pink-600 bg-clip-text text-transparent text-xl font-bold">
+            CharityFlow
+          </span>
           <span className="ml-2 text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700 uppercase opacity-0 sm:opacity-100">
             Live Tracking
           </span>
         </div>
 
+        {/* User Menu */}
         {isLoggedIn ? (
           <div className="relative" ref={dropdownRef}>
             <button
@@ -94,9 +86,10 @@ const Header: React.FC<HeaderProps> = ({
 
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                <div className='px-4 py-2 border-b border-gray-200'>
-                  {getCurrentSession()?.username}
+                <div className="px-4 py-2 border-b border-gray-200 font-medium">
+                  {currentUser?.username ?? "Unknown User"}
                 </div>
+
                 <button
                   onClick={handleProfileClick}
                   className="cursor-pointer w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
@@ -104,14 +97,6 @@ const Header: React.FC<HeaderProps> = ({
                   <UserIcon className="h-4 w-4" />
                   <span>Profile</span>
                 </button>
-
-                {/* <button
-                  onClick={handleWalletClick}
-                  className="cursor-pointer w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
-                >
-                  <WalletIcon className="h-4 w-4" />
-                  <span>Wallet</span>
-                </button> */}
 
                 <hr className="my-1 border-gray-200" />
 
