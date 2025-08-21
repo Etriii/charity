@@ -271,14 +271,14 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
               <div className="grid w-full grid-cols-2 bg-gray-100 rounded-full p-1">
                 <button
                   onClick={() => setActiveTab('login')}
-                  className={`py-2 px-4 rounded-full transition-colors duration-200 flex items-center justify-center ${activeTab === 'login' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`py-2 px-4 rounded-full transition-colors duration-200 flex items-center justify-center ${activeTab === 'login' ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <LogInIcon />
                   <span className="ml-2 text-nowrap">Log In</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('register')}
-                  className={`py-2 px-4 rounded-full transition-colors duration-200 flex items-center justify-center ${activeTab === 'register' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`py-2 px-4 rounded-full  transition-colors duration-200 flex items-center justify-center ${activeTab === 'register' ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <UserPlusIconComponent />
                   <span className="ml-2 text-nowrap">Create Account</span>
@@ -300,7 +300,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                         value={loginEmail}
                         onChange={(e) => setLoginEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                       />
                     </div>
                     <div>
@@ -312,7 +312,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                           value={loginPassword}
                           onChange={(e) => setLoginPassword(e.target.value)}
                           placeholder="Enter your password"
-                          className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                          className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                         />
                         <button
                           type="button"
@@ -330,7 +330,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                     <div className="pt-4">
                       <button
                         onClick={handleLogin}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
+                        className="w-full bg-gradient-to-br from-purple-600 to-pink-600 hover:bg-blue-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
                         disabled={loginLoading || !loginEmail.trim() || !loginPassword.trim()}
                       >
                         <LogInIcon />
@@ -338,8 +338,8 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                       </button>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-500 space-y-1 bg-blue-50 p-3 rounded-xl">
-                    <p className="font-medium text-blue-800">Returning Donor Benefits:</p>
+                  <div className="text-xs text-gray-500 space-y-1 bg-purple-50 p-3 rounded-xl">
+                    <p className="font-medium text-pink-800">Returning Donor Benefits:</p>
                     <p>• Access your complete donation history</p>
                     <p>• View impact analytics and statistics</p>
                     <p>• Continue transparent giving journey</p>
@@ -362,7 +362,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                         value={registerUsername}
                         onChange={(e) => setRegisterUsername(e.target.value)}
                         placeholder="Enter your display name"
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                       />
                       <p className="text-xs text-gray-600 mt-1">This will be shown in your donation history (unless you donate anonymously)</p>
                     </div>
@@ -374,7 +374,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                         value={registerEmail}
                         onChange={(e) => setRegisterEmail(e.target.value)}
                         placeholder="Enter your email"
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                       />
                       <p className="text-xs text-gray-600 mt-1">Used for account access and donation receipts</p>
                     </div>
@@ -387,7 +387,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                           value={registerPassword}
                           onChange={(e) => setRegisterPassword(e.target.value)}
                           placeholder="Enter your password"
-                          className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                          className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                         />
                         <button
                           type="button"
@@ -412,7 +412,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm your password"
-                          className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                          className="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
                         />
                         <button
                           type="button"
@@ -431,7 +431,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                     <div className="pt-4">
                       <button
                         onClick={handleRegister}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
+                        className="w-full bg-gradient-to-br from-purple-600 to-indigo-600 hover:bg-green-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
                         disabled={registerLoading || !registerUsername.trim() || !registerEmail.trim() || !registerPassword.trim() || !confirmPassword.trim()}
                       >
                         <UserPlusIconComponent />
@@ -439,8 +439,8 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                       </button>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-500 space-y-1 bg-green-50 p-3 rounded-xl max-h-32 overflow-y-auto">
-                    <p className="font-medium text-green-800">New Donor Features:</p>
+                  <div className="text-xs text-gray-500 space-y-1 bg-purple-50 p-3 rounded-xl max-h-32 overflow-y-auto">
+                    <p className="font-medium text-purple-800">New Donor Features:</p>
                     <p>• Your donations are tracked transparently on the blockchain</p>
                     <p>• You can choose to donate anonymously for any donation</p>
                     <p>• All charity totals are publicly visible in real-time</p>

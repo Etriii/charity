@@ -11,6 +11,7 @@ type Donation = {
   date: string;
   type?: string;
   anonymous?: boolean;
+  charity: string;
 };
 
 interface User {
@@ -150,16 +151,23 @@ const updateDonationEmailRecords = (oldEmail: string, newEmail: string) => {
 const getUserDonations = (userEmail: string): Donation[] => {
   const donations = getDonationsFromStorage();
 
-  return donations
+  const filteredAndSorted = donations
     .filter(donation => donation.email?.toLowerCase() === userEmail.toLowerCase())
-    .map(donation => ({
-      organization: donation.organization || donation.charity || 'Unknown Organization',
-      donation: `$${donation.amount}`,
-      date: donation.date || new Date(donation.datetime).toLocaleDateString(),
-      type: donation.type,
-      anonymous: donation.anonymous
-    }))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // sorts by date, newest first
+    .sort((a, b) => {
+      const dateA = new Date(a.datetime || a.date);
+      const dateB = new Date(b.datetime || b.date);
+
+      return dateB.getTime() - dateA.getTime();
+    });
+
+  return filteredAndSorted.map(donation => ({
+    organization: donation.organization || donation.charity || 'Unknown Organization',
+    donation: `${donation.amount}`,
+    date: donation.date || new Date(donation.datetime).toLocaleDateString(),
+    type: donation.type,
+    anonymous: donation.anonymous,
+    charity: donation.charity
+  }));
 };
 
 // checks if email is unique (execpt current user)
@@ -397,7 +405,7 @@ export default function UserProfile(): JSX.Element {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 px-6 py-8 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" />
+          <Loader2 className="animate-spin h-12 w-12 text-purple-600 mx-auto mb-4" />
           <p className="text-gray-600">Loading profile...</p>
         </div>
       </div>
@@ -409,7 +417,7 @@ export default function UserProfile(): JSX.Element {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 px-6 py-8">
         <Link
           href="/"
-          className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+          className="flex items-center font-medium text-grey-600 hover:text-purple-800 mb-6 transition-colors"
         >
           <ArrowLeft size={20} className="mr-2" />
           Back
@@ -421,7 +429,7 @@ export default function UserProfile(): JSX.Element {
             <p className="text-red-600">{error}</p>
             <Link
               href="/"
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-grey-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
             >
               Go to Home
             </Link>
@@ -544,10 +552,19 @@ export default function UserProfile(): JSX.Element {
               <div className="p-6 flex flex-col h-full">
 
                 <div>
+                  <div className="flex justify-between">
                   <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                     <DollarSign size={20} className="text-blue-600" />
                     Donation History
                   </h3>
+
+                          <button
+                            onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
+                            className="text-grey-50 hover:text-purple-600 transition-colors text-sm"
+                          >
+                            View All Donations
+                          </button>
+                        </div>
 
                   {user.donationHistory.length === 0 ? (
                     <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
@@ -564,7 +581,8 @@ export default function UserProfile(): JSX.Element {
                           <div key={i} className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
                             <div className="flex justify-between items-start">
                               <div>
-                                <h4 className="font-medium text-gray-800">{donation.organization}</h4>
+                                <p className="text-base font-medium text-grey-600">{donation.charity}</p>
+                                <h4 className="text-sm text-gray-800">{donation.organization}</h4>
                                 <div className="flex items-center gap-2 mt-1">
                                   <span className="text-sm text-gray-500">{donation.date}</span>
                                   {donation.anonymous && (
@@ -576,7 +594,9 @@ export default function UserProfile(): JSX.Element {
                                 </div>
                               </div>
                               <div className="text-right">
-                                <span className="font-semibold text-green-600">{donation.donation}</span>
+                                <span className="font-bold text-green-600">
+                                  ${donation.donation}
+                                </span>
                                 <div className="mt-1">
                                   <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                                     {donation.type || 'Direct'}
@@ -587,8 +607,7 @@ export default function UserProfile(): JSX.Element {
                           </div>
                         ))}
                       </div>
-
-                      {user.donationHistory.length > 5 && (
+                      {/* {user.donationHistory.length > 5 && (
                         <div className="mt-4 text-end">
                           <button
                             onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
@@ -597,7 +616,7 @@ export default function UserProfile(): JSX.Element {
                             View All {user.donationHistory.length} Donations
                           </button>
                         </div>
-                      )}
+                      )} */}
                     </>
                   )}
                 </div>
@@ -653,7 +672,7 @@ export default function UserProfile(): JSX.Element {
                   type="text"
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Enter your username"
                 />
               </div>
@@ -669,7 +688,7 @@ export default function UserProfile(): JSX.Element {
                   onChange={(e) => setTempEmail(e.target.value)}
                   className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${emailValidationError
                     ? "border-red-300 focus:ring-red-500"
-                    : "border-gray-300 focus:ring-blue-500"
+                    : "border-gray-300 focus:ring-purple-500"
                     }`}
                   placeholder="Enter your email address"
                 />
@@ -699,7 +718,7 @@ export default function UserProfile(): JSX.Element {
                 disabled={!!emailValidationError}
                 className={`flex-1 px-4 py-2.5 rounded-lg transition-colors ${emailValidationError
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
                   }`}
               >
                 Save Changes
@@ -738,7 +757,7 @@ export default function UserProfile(): JSX.Element {
               </button>
               <button
                 onClick={confirmSave}
-                className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 px-4 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
                 Confirm
               </button>

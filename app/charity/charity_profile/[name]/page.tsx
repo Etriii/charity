@@ -177,7 +177,7 @@ export default function CharityPage({ params }: PageProps) {
         <div className="container mx-auto flex items-center">
           <button
             onClick={handleBack}
-            className="text-blue-600 hover:underline flex items-center gap-1"
+            className="text-grey-600 font-medium hover:text-purple-600 flex items-center gap-1"
           >
             &larr; Back
           </button>
@@ -281,7 +281,7 @@ export default function CharityPage({ params }: PageProps) {
             </div>
 
             <div className="ml-auto text-center">
-              <button className="bg-gradient-to-r cursor-pointer from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition">
+              <button className="bg-gradient-to-r cursor-pointer from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition">
                 Donate Now
               </button>
             </div>

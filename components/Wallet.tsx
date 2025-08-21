@@ -18,9 +18,16 @@ const setUsersInStorage = (users: User[]) => {
 
 export const updateAddBalance = (user: User | undefined, users: User[], amount: string) => {
     if (!user) {
-        alert("User is required to update balance.")
+        alert("User is required to update balance.");
         return;
     }
+
+    const parsedAmount = parseFloat(amount || "0");
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        alert("Invalid amount.");
+        return;
+    }
+
     const userIndex = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
 
     if (userIndex !== -1) {
@@ -28,25 +35,34 @@ export const updateAddBalance = (user: User | undefined, users: User[], amount: 
             index === userIndex
                 ? {
                     ...u,
-                    balance: parseFloat(u.balance.toString()) + parseFloat(amount.toString())
+                    balance: (parseFloat(u.balance?.toString() || "0")) + parsedAmount
                 }
                 : u
         );
 
-        setUsersInStorage(updatedUsers)
-        user.balance = parseFloat(user.balance.toString()) + parseFloat(amount.toString())
+        setUsersInStorage(updatedUsers);
+
+        user.balance = (parseFloat(user.balance?.toString() || "0")) + parsedAmount;
+
         localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(updatedUsers[userIndex]));
-        console.log("new balance: " + user.balance)
+        console.log("new balance: " + user.balance);
     } else {
         alert("Failed to verify User");
     }
-}
+};
 
 export const updateDeductBalance = (user: User | undefined, users: User[], amount: string) => {
     if (!user) {
-        alert("User is required to update balance.")
+        alert("User is required to update balance.");
         return;
     }
+
+    const parsedAmount = parseFloat(amount || "0");
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        alert("Invalid amount.");
+        return;
+    }
+
     const userIndex = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
 
     if (userIndex !== -1) {
@@ -54,19 +70,22 @@ export const updateDeductBalance = (user: User | undefined, users: User[], amoun
             index === userIndex
                 ? {
                     ...u,
-                    balance: parseFloat(u.balance.toString()) - parseFloat(amount.toString())
+                    balance: (parseFloat(u.balance?.toString() || "0")) - parsedAmount
                 }
                 : u
         );
 
-        setUsersInStorage(updatedUsers)
-        user.balance = parseFloat(user.balance.toString()) - parseFloat(amount.toString())
+        setUsersInStorage(updatedUsers);
+
+        user.balance = (parseFloat(user.balance?.toString() || "0")) - parsedAmount;
+
         localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(updatedUsers[userIndex]));
-        console.log("new balance: " + user.balance)
+        console.log("new balance: " + user.balance);
     } else {
         alert("Failed to verify User");
     }
-}
+};
+
 
 const Wallet: React.FC<WalletProps> = ({ user, getUsers }) => {
 
@@ -187,7 +206,12 @@ const Wallet: React.FC<WalletProps> = ({ user, getUsers }) => {
                         </button>
                         <button
                             onClick={handleSubmit}
-                            className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            disabled={!amount || parseFloat(amount) <= 0}
+                            className={`w-full py-2 rounded-lg transition
+    ${!amount || parseFloat(amount) <= 0
+                                    ? "bg-gray-300 text-gray-500"
+                                    : "bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:bg-blue-700"
+                                }`}
                         >
                             Add Funds
                         </button>

@@ -37,7 +37,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
     const presetAmounts = [10, 25, 50, 100, 250, 500];
     const [currentUser, setCurrentUser] = useState<User | null>();
 
-    useEffect(()=>{
+    useEffect(() => {
         setCurrentUser(getCurrentSession())
     }, [isProcessing])
 
@@ -121,8 +121,8 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
             ></div>
 
             {/* modal */}
-            <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto z-10">
-                <div className="p-6">
+            <div className="relative bg-white rounded-xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto z-10 no-scrollbar">
+                <div className="py-8 px-12">
                     {/* header */}
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center space-x-2">
@@ -179,7 +179,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
                         <select
                             value={selectedOrganization}
                             onChange={(e) => setSelectedOrganization(e.target.value)}
-                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
                         >
                             <option value="random">Random Distribution</option>
                             {organizations.map((org, index) => (
@@ -203,7 +203,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
                                 type="checkbox"
                                 checked={isAnonymous}
                                 onChange={(e) => setIsAnonymous(e.target.checked)}
-                                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
                             />
                             <span className="text-sm font-medium text-gray-700">
                                 Make this donation anonymous
@@ -279,7 +279,11 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
                         <button
                             onClick={handleDonate}
                             disabled={!amount || parseFloat(amount) <= 0 || isProcessing}
-                            className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center space-x-2"
+                            className={`flex-1 px-4 py-3 text-white rounded-lg transition-colors font-medium flex items-center justify-center space-x-2
+    ${!amount || parseFloat(amount) <= 0 || isProcessing
+                                    ? "bg-gray-400"
+                                   : "bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                                }`}
                         >
                             {isProcessing ? (
                                 <>
@@ -289,7 +293,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
                             ) : (
                                 <>
                                     <HeartIcon className="h-4 w-4" />
-                                    <span>Donate ${amount || '0'}</span>
+                                    <span>Donate ${amount || "0"}</span>
                                 </>
                             )}
                         </button>
