@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import { XMarkIcon, HeartIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/solid';
-import { getCurrentSession } from './DonationAuthContent';
+import { getCurrentSession, getUsersFromStorage } from './DonationAuthContent';
+
+import { updateDeductBalance } from './Wallet';
+import { User } from '@/types';
+
 interface DonationModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -9,15 +14,16 @@ interface DonationModalProps {
 }
 
 interface Donation {
-  amount: number;
-  charity: string;
-  organization: string;
-  type: string;
-  date: string;     
-  datetime: string; 
-  anonymous: boolean;
-  email: string;
+    amount: number;
+    charity: string;
+    organization: string;
+    type: string;
+    date: string;
+    datetime: string;
+    anonymous: boolean;
+    email: string;
 }
+
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const loggedInUserEmail = "user@example.com";
@@ -29,64 +35,82 @@ const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityN
     const [paymentMethod, setPaymentMethod] = useState<string>('card');
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const presetAmounts = [10, 25, 50, 100, 250, 500];
-        if (!isOpen) return null;
+    const [currentUser, setCurrentUser] = useState<User | null>();
+
+    useEffect(()=>{
+        setCurrentUser(getCurrentSession())
+    }, [isProcessing])
+
+
+    if (!isOpen) return null;
 
     const handleAmountClick = (presetAmount: number) => {
         setAmount(presetAmount.toString());
     };
 
-const handleDonate = async () => {
-  if (!amount || parseFloat(amount) <= 0) {
-    alert('Please enter a valid donation amount');
-    return;
-  }
 
-  setIsProcessing(true);
+    const handleDonate = async () => {
+        if (!amount || parseFloat(amount) <= 0) {
+            alert('Please enter a valid donation amount');
+            return;
+        }
 
-  setTimeout(() => {
-    const currentUser = getCurrentSession();
+        setIsProcessing(true);
 
-    // create new donation
-const newDonation: Donation = {
-  amount: parseFloat(amount),
-  charity: charityName,
-  organization: selectedOrganization === 'random' ? 'Random Distribution' : selectedOrganization,
-  type: selectedOrganization === 'random' ? 'Random' : 'Direct',
-  date: new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  }),
-  datetime: new Date().toISOString(),
-  anonymous: isAnonymous,
-  email: currentUser?.email || "none@anonymous.com",
-};
+        console.log(amount, currentUser?.balance)
 
-    // recent donations
-    const recentDonations: Donation[] = JSON.parse(localStorage.getItem("recentDonations") || "[]");
-    recentDonations.unshift(newDonation);
-    localStorage.setItem("recentDonations", JSON.stringify(recentDonations));
+        if (currentUser && currentUser.balance < parseFloat(amount)) {
+            alert("Not enough balance")
+            setIsProcessing(false);
+            return;
+        }
 
-    // all donations
-    const allDonations: Donation[] = JSON.parse(localStorage.getItem("donations") || "[]");
-    allDonations.push(newDonation);
-    localStorage.setItem("donations", JSON.stringify(allDonations));
+        setTimeout(() => {
+            const currentUser = getCurrentSession();
 
-    // triggers live updates
-    window.dispatchEvent(new Event("donationsUpdated"));
+            // create new donation
+            const newDonation: Donation = {
+                amount: parseFloat(amount),
+                charity: charityName,
+                organization: selectedOrganization === 'random' ? 'Random Distribution' : selectedOrganization,
+                type: selectedOrganization === 'random' ? 'Random' : 'Direct',
+                date: new Date().toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                }),
+                datetime: new Date().toISOString(),
+                anonymous: isAnonymous,
+                email: currentUser?.email || "none@anonymous.com",
+            };
 
-    alert(`Thank you for your $${amount} donation to ${charityName}!`);
+            // recent donations
+            const recentDonations: Donation[] = JSON.parse(localStorage.getItem("recentDonations") || "[]");
+            recentDonations.unshift(newDonation);
+            localStorage.setItem("recentDonations", JSON.stringify(recentDonations));
 
-    setIsProcessing(false);
-    onClose();
+            // all donations
+            const allDonations: Donation[] = JSON.parse(localStorage.getItem("donations") || "[]");
+            allDonations.push(newDonation);
+            localStorage.setItem("donations", JSON.stringify(allDonations));
 
-    // reset
-    setAmount('');
-    setSelectedOrganization('random');
-    setIsAnonymous(false);
-    setPaymentMethod('card');
-  }, 2000);
-};
+            // triggers live updates
+            window.dispatchEvent(new Event("donationsUpdated"));
+
+            alert(`Thank you for your $${amount} donation to ${charityName}!`);
+
+            setIsProcessing(false);
+            onClose();
+
+            // reset
+            setAmount('');
+            setSelectedOrganization('random');
+            setIsAnonymous(false);
+            setPaymentMethod('card');
+
+            updateDeductBalance(getCurrentSession() ?? undefined, getUsersFromStorage(), amount)
+        }, 2000);
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -111,6 +135,10 @@ const newDonation: Donation = {
                         >
                             <XMarkIcon className="h-6 w-6" />
                         </button>
+                    </div>
+
+                    <div className='flex justify-between items-center pb-2'>
+                        <span>Currrent balance:</span> <span className='text-pink-500 font-bold'> ₱{new Intl.NumberFormat('en-US').format(currentUser?.balance || 0)}.00</span>
                     </div>
 
                     {/* amount selection */}

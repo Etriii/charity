@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { Pencil, ArrowLeft, User, DollarSign, Shield, Heart, Loader2, X } from "lucide-react";
+import { Pencil, ArrowLeft, User as UserIcon, DollarSign, Shield, Heart, Loader2, X } from "lucide-react";
 import Link from "next/link";
 import Wallet from "@/components/Wallet";
-
 type Donation = {
   organization: string;
   donation: string;
@@ -66,7 +65,7 @@ export const getCurrentSession = (): User | null => {
   return null;
 };
 
-const setCurrentSession = (user: User | null) => {
+export const setCurrentSession = (user: User) => {
   if (typeof window !== 'undefined') {
     if (user) {
       localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(user));
@@ -475,7 +474,7 @@ export default function UserProfile(): JSX.Element {
               <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <User size={20} className="text-purple-600" />
+                    <UserIcon size={20} className="text-purple-600" />
                     Profile
                   </h2>
                   <button
@@ -489,7 +488,7 @@ export default function UserProfile(): JSX.Element {
 
                 <div className="flex justify-center mb-4">
                   <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center">
-                    <User size={32} className="text-white" />
+                    <UserIcon size={32} className="text-white" />
                   </div>
                 </div>
 

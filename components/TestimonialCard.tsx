@@ -28,6 +28,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ quote, author, title,
           onError={(e) => {
             e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(author)}&background=e5e7eb&color=374151&size=48`;
           }}
+          priority
         />
         <div>
           <h4 className="font-semibold text-gray-900">{author}</h4>

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Wallet as WalletIcon } from 'lucide-react'
 import { User } from '@/types'
 import Modal from './Modal'
+// import { setCurrentSession } from 'app/profile/profile_page/[email]/page'
 
 interface WalletProps {
     user: User;
@@ -14,6 +15,58 @@ const setUsersInStorage = (users: User[]) => {
         localStorage.setItem('donateTransparentlyUsers', JSON.stringify(users));
     }
 };
+
+export const updateAddBalance = (user: User | undefined, users: User[], amount: string) => {
+    if (!user) {
+        alert("User is required to update balance.")
+        return;
+    }
+    const userIndex = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
+
+    if (userIndex !== -1) {
+        const updatedUsers = users.map((u, index) =>
+            index === userIndex
+                ? {
+                    ...u,
+                    balance: parseFloat(u.balance.toString()) + parseFloat(amount.toString())
+                }
+                : u
+        );
+
+        setUsersInStorage(updatedUsers)
+        user.balance = parseFloat(user.balance.toString()) + parseFloat(amount.toString())
+        localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(updatedUsers[userIndex]));
+        console.log("new balance: " + user.balance)
+    } else {
+        alert("Failed to verify User");
+    }
+}
+
+export const updateDeductBalance = (user: User | undefined, users: User[], amount: string) => {
+    if (!user) {
+        alert("User is required to update balance.")
+        return;
+    }
+    const userIndex = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
+
+    if (userIndex !== -1) {
+        const updatedUsers = users.map((u, index) =>
+            index === userIndex
+                ? {
+                    ...u,
+                    balance: parseFloat(u.balance.toString()) - parseFloat(amount.toString())
+                }
+                : u
+        );
+
+        setUsersInStorage(updatedUsers)
+        user.balance = parseFloat(user.balance.toString()) - parseFloat(amount.toString())
+        localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(updatedUsers[userIndex]));
+        console.log("new balance: " + user.balance)
+    } else {
+        alert("Failed to verify User");
+    }
+}
 
 const Wallet: React.FC<WalletProps> = ({ user, getUsers }) => {
 
@@ -38,25 +91,8 @@ const Wallet: React.FC<WalletProps> = ({ user, getUsers }) => {
     };
 
     const handleSubmit = () => {
-        const userIndex = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
 
-        if (userIndex !== -1) {
-            const updatedUsers = users.map((u, index) =>
-                index === userIndex
-                    ? {
-                        ...u,
-                        balance: parseFloat(u.balance.toString()) + parseFloat(amount.toString())
-                    }
-                    : u
-            );
-
-            setUsersInStorage(updatedUsers)
-            user.balance = parseFloat(user.balance.toString()) + parseFloat(amount.toString())
-
-            alert("Na add na boi");
-        } else {
-            alert("Failed to verify User");
-        }
+        updateAddBalance(user, users, amount);
 
         onClose(); // Close the modal
     };

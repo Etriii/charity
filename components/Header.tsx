@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   ArrowRightOnRectangleIcon,
   UserIcon,
-  WalletIcon,
+  // WalletIcon,
   ChevronDownIcon,
 } from "@heroicons/react/24/solid";
 import { HeaderProps } from "../types";
@@ -35,12 +35,12 @@ const Header: React.FC<HeaderProps> = ({
     setIsDropdownOpen(false);
   };
 
-  const handleWalletClick = () => {
-    if (userEmail) {
-      router.push(`/wallet/user_wallet/${userEmail.replace(/\s+/g, "-")}`);
-    }
-    setIsDropdownOpen(false);
-  };
+  // const handleWalletClick = () => {
+  //   if (userEmail) {
+  //     router.push(`/wallet/user_wallet/${userEmail.replace(/\s+/g, "-")}`);
+  //   }
+  //   setIsDropdownOpen(false);
+  // };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,13 +105,13 @@ const Header: React.FC<HeaderProps> = ({
                   <span>Profile</span>
                 </button>
 
-                <button
+                {/* <button
                   onClick={handleWalletClick}
                   className="cursor-pointer w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
                 >
                   <WalletIcon className="h-4 w-4" />
                   <span>Wallet</span>
-                </button>
+                </button> */}
 
                 <hr className="my-1 border-gray-200" />
 
