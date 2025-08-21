@@ -27,6 +27,7 @@ interface Charity {
   received: number;
   organizations: string[];
   image: string;
+  logo: string;
 }
 
 interface Testimonial {
@@ -76,6 +77,7 @@ const HomePage: React.FC<HomePageProps> = ({
       received: 500,
       organizations: ["UNICEF USA", "UNICEF International"],
       image: "/images/UNICEFBG.jpg",
+      logo: "/images/UNICEF.png"
     },
     {
       name: "Red Cross",
@@ -84,6 +86,7 @@ const HomePage: React.FC<HomePageProps> = ({
       received: 100,
       organizations: ["American Red Cross", "International Red Cross"],
       image: "/images/RCbg1.jpg",
+      logo: "/images/RC.jpg",
     },
     {
       name: "Doctors Without Borders (MSF)",
@@ -92,6 +95,7 @@ const HomePage: React.FC<HomePageProps> = ({
       received: 450,
       organizations: ["MSF USA", "MSF International"],
       image: "/images/MSFB.avif",
+      logo: "/images/MSF.png",
     },
     {
       name: "World Wildlife Fund (WWF)",
@@ -100,6 +104,7 @@ const HomePage: React.FC<HomePageProps> = ({
       received: 150,
       organizations: ["WWF-US", "WWF International"],
       image: "/images/WWFBG.jpg",
+      logo: "/images/WWF.jpg",
     },
     {
       name: "Salvation Army",
@@ -111,6 +116,7 @@ const HomePage: React.FC<HomePageProps> = ({
         "The Salvation Army International",
       ],
       image: "/images/SABG.jpg",
+      logo: "/images/SA.jpg",
     },
     {
       name: "Oxfam",
@@ -119,6 +125,7 @@ const HomePage: React.FC<HomePageProps> = ({
       received: 402,
       organizations: ["Oxfam America", "Oxfam International"],
       image: "/images/OXFBG.jpg",
+      logo: "/images/OXF.png",
     },
   ];
 
@@ -242,6 +249,7 @@ const HomePage: React.FC<HomePageProps> = ({
               setIsModalOpen={setIsModalOpen}
               isLoggedIn={isLoggedIn}
               image={charity.image}
+              logo={charity.logo}
             />
           ))}
         </div>
