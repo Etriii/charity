@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { HeartIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/solid';
-import DonationModal from './DonationModal';
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { HeartIcon, MapPinIcon, CalendarIcon } from "@heroicons/react/24/solid";
+import DonationModal from "./DonationModal";
 
 interface CharityCardProps {
   name: string;
@@ -58,7 +58,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
           <div className="h-48 bg-gradient-to-br from-purple-500 to-pink-600 relative overflow-hidden rounded-t-2xl">
             {(image || coverImage) && (
               <Image
-                src={image || coverImage || ''}
+                src={image || coverImage || ""}
                 alt={`${name} cover image`}
                 fill
                 className="object-cover"
@@ -87,7 +87,9 @@ const CharityCard: React.FC<CharityCardProps> = ({
                 />
               )}
               {!logo && (
-                <span className="text-white font-bold text-lg">{name.charAt(0)}</span>
+                <span className="text-white font-bold text-lg">
+                  {name.charAt(0)}
+                </span>
               )}
             </div>
             <div className="flex-1">
@@ -111,11 +113,16 @@ const CharityCard: React.FC<CharityCardProps> = ({
 
           {/* Organizations */}
           <div className="mb-4">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Organizations:</h4>
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">
+              Organizations:
+            </h4>
             <div className="flex flex-wrap gap-2">
               {organizations && organizations.length > 0 ? (
                 organizations.map((org, index) => (
-                  <div key={index} className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
+                  <div
+                    key={index}
+                    className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded"
+                  >
                     {org}
                   </div>
                 ))
@@ -142,6 +149,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
               <div className="text-gray-600 text-xs">Donors</div>
             </div>
           </div>
+
           {/* Action buttons */}
           <div className="flex space-x-3 mt-auto">
             <Link
