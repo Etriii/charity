@@ -299,10 +299,10 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
               {activeTab === 'login' && (
                 <div className="space-y-4">
                   <div className="text-center space-y-2">
-                    <h3 className="text-lg font-semibold text-black">Log In to Your Account</h3>
+                    <h3 className="text-base font-semibold text-black">Log In to Your Account</h3>
                     <p className="text-sm text-gray-600">Access your donation history and continue giving transparently</p>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-2">
                     <div>
                       <label htmlFor="login-email" className="text-black block text-sm font-medium mb-1">Email Address</label>
                       <input
@@ -361,10 +361,10 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
               {activeTab === 'register' && (
                 <div className="space-y-4">
                   <div className="text-center space-y-2">
-                    <h3 className="text-lg font-semibold text-black">Create Your Donor Account</h3>
+                    <h3 className="text-base font-semibold text-black">Create Your Donor Account</h3>
                     <p className="text-sm text-gray-600">Join the transparent giving community</p>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-2">
                     <div>
                       <label htmlFor="register-username" className="text-black block text-sm font-medium mb-1">Display Name</label>
                       <input
