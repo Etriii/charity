@@ -72,7 +72,7 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isL
       {/* hero */}
       <section className="text-center mb-16 mt-16">
         <h1 className="text-5xl font-extrabold tracking-tight mb-4">
-          Donate with Complete <span className="text-blue-600">Transparency</span>
+          Donate with Complete <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-blue-600">Transparency</span>
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
           Track every donation in real-time. See exactly where your money goes and the impact you are making across 6 trusted charity organizations.
@@ -80,7 +80,7 @@ const HomePage: React.FC<HomePageProps> = ({ setIsModalOpen, setMainMessage, isL
         <div className="flex justify-center space-x-4">
           <button
             onClick={handleDonateClick}
-            className="bg-blue-600 text-white font-bold py-4 px-12 rounded-lg text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
+            className="bg-gradient-to-r cursor-pointer from-purple-600 to-blue-600 text-white font-bold py-4 px-12 rounded-lg text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
           >
             {isLoggedIn ? 'Make a Donation' : 'Start Donating'}
           </button>

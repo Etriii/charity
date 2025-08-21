@@ -26,7 +26,7 @@
       "name": "next"
     }],
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./"],
       "@/components/*": ["components/*"],
       "@/types": ["types/index"]
     }
