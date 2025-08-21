@@ -14,7 +14,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ quote, author, title,
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
       <div className="flex items-start mb-4">
-        <ChatBubbleLeftRightIcon  className="h-6 w-6 text-blue-500 mr-2 flex-shrink-0 mt-1" />
+        <ChatBubbleLeftRightIcon  className="h-6 w-6 text-pink-500 mr-2 flex-shrink-0 mt-1" />
         <p className="text-gray-600 italic leading-relaxed">{quote}</p>
       </div>
       

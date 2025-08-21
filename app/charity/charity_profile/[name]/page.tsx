@@ -59,7 +59,7 @@ const charitiesData: Record<string, Charity> = {
     organizations: ["American Red Cross", "International Red Cross"],
     fullDescription:
       "The Red Cross, part of the global Red Cross and Red Crescent network, provides humanitarian aid. We are an International humanitarian movement providing emergency assistance, disaster relief, and health education.",
-    image: "/images/RCBG.jpg",
+    image: "/images/RCbg1.jpg",
     profile_image: "/images/RC.jpg",
     established: "1863",
     category: "Humanitarian Aid",

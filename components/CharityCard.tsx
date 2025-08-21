@@ -10,6 +10,7 @@ interface CharityCardProps {
   organizations: string[];
   setIsModalOpen: (isOpen: boolean) => void;
   isLoggedIn: boolean;
+  image: string; 
 }
 
 const CharityCard: React.FC<CharityCardProps> = ({
@@ -18,7 +19,8 @@ const CharityCard: React.FC<CharityCardProps> = ({
   received,
   organizations,
   setIsModalOpen,
-  isLoggedIn
+  isLoggedIn,
+  image
 }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
 
@@ -34,6 +36,15 @@ const CharityCard: React.FC<CharityCardProps> = ({
   return (
     <>
       <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 flex flex-col justify-between">
+        
+        {/* Charity Image */}
+        <div className="w-full h-48 mb-4">
+          <img 
+            src={image} 
+            alt={name} 
+            className="w-full h-full object-cover rounded-xl"
+          />
+        </div>
         <div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">{name}</h3>
           <p className="text-gray-600 mb-4 leading-relaxed">{description}</p>
@@ -64,8 +75,8 @@ const CharityCard: React.FC<CharityCardProps> = ({
 
         <div className="sm:flex space-x-4 mt-auto space-y-2">
           <button
-            onClick={handleDonateClick}
-            className="flex-1 bg-gradient-to-r w-full cursor-pointer from-purple-600 to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center space-x-2"
+            onClick={handleDonateClick}  
+            className="flex-1 bg-gradient-to-r w-full cursor-pointer from-purple-500 to-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center space-x-2"
           >
             <HeartIcon className="h-4 w-4" />
             <span className=' text-nowrap'>Donate Now</span>
@@ -75,7 +86,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
             href={`/charity/charity_profile/${name.replace(/\s+/g, "-")}`}
             className="flex-1 text-nowrap bg-gray-100 text-gray-700 font-medium py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center flex items-center justify-center"
           >
-            View Profile
+            Learn More
           </Link>
         </div>
       </div>
