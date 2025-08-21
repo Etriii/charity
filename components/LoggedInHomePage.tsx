@@ -282,11 +282,11 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
 
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center">
-            <UserGroupIcon className="h-8 w-8 text-blue-500 mr-3" />
-            <div>
-              <p className="text-sm text-gray-500">Active Charities</p>
+           <EyeIcon className="h-8 w-8 text-blue-500 mr-3" />
+          <div>
+              <p className="text-sm text-gray-500">Your Donations</p>
               <p className="text-2xl font-bold text-blue-600">
-                {charities.length}
+                {userStats.donationsMade}
               </p>
             </div>
           </div>
@@ -309,11 +309,11 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
 
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center">
-            <EyeIcon className="h-8 w-8 text-orange-500 mr-3" />
+              <UserGroupIcon className="h-8 w-8 text-orange-500 mr-3" />
             <div>
-              <p className="text-sm text-gray-500">Your Donations</p>
+              <p className="text-sm text-gray-500">Active Charities</p>
               <p className="text-2xl font-bold text-orange-600">
-                {userStats.donationsMade}
+                {charities.length}
               </p>
             </div>
           </div>
@@ -323,7 +323,7 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
       {/* choosing charity section */}
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-gray-800 pt-8 pb-4">
             Choose a Charity to Support
           </h2>
           <p className="text-sm text-gray-500">
@@ -353,7 +353,7 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
   );
 
   return (
-    <div className="container mx-auto pt-24 px-8 min-h-screen">
+    <div className="container mx-auto pt-24 px-8 min-h-screen pb-24">
       {/* nav tabs */}
       <div className="flex space-x-8 mb-8">
         <button

@@ -66,4 +66,16 @@ export type Donation = {
   date: string;
   anonymous: boolean;
   email: string;
+  donation: string; 
+};
+
+export interface DonationRecord {
+  amount: number;
+  anonymous: boolean;
+  charity: string;
+  date: string;
+  datetime: string;
+  email: string;
+  organization: string;
+  type: string;
 };
