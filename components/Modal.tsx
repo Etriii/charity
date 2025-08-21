@@ -32,24 +32,19 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
-      <div
-        ref={modalContentRef}
-        className="relative bg-white rounded-3xl shadow-2xl w-full max-w-3xl mx-auto px-12 py-8"
+    <div
+      ref={modalContentRef}
+      className="fixed border p-4 bg-white border-gray-300 shadow-lg  rounded-lg top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-50 max-h-[90%] w-full sm:w-[70%] md:w-auto max-w-[90%] overflow-y-auto"
+    >
+      <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+      <button
+        onClick={onClose}
+        className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors duration-200 cursor-pointer"
+        aria-label="Close modal"
       >
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">{title}</h2>
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-            aria-label="Close modal"
-          >
-            <XMarkIcon className="h-8 w-6" />
-          </button>
-        </div>
-        {children}
-      </div>
+        <XMarkIcon className="h-6 w-6" />
+      </button>
+      {children}
     </div>
   );
 };

@@ -9,6 +9,13 @@ export interface ModalProps {
   children: React.ReactNode;
 }
 
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  createdAt: string;
+}
+
 export interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
