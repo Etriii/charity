@@ -2,14 +2,13 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import {
-  ArrowRightOnRectangleIcon,
+  ArrowRightIcon,
   UserIcon,
   ChevronDownIcon,
 } from "@heroicons/react/24/solid";
 import { HeaderProps } from "../types";
 import { useRouter } from "next/navigation";
 import { getCurrentSession } from "../lib/localStorageUtils";
-
 const Header: React.FC<HeaderProps> = ({
   isLoggedIn,
   onLogout,
@@ -104,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({
                   onClick={handleLogout}
                   className="cursor-pointer w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors duration-150"
                 >
-                  <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                  <ArrowRightIcon  className="h-4 w-4" />
                   <span>Log Out</span>
                 </button>
               </div>
