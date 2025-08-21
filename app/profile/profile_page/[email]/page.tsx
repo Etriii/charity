@@ -58,7 +58,7 @@ const setUsersInStorage = (users: User[]) => {
   }
 };
 
-export const getCurrentSession = (): User | null => {
+const getCurrentSession = (): User | null => {
   if (typeof window !== 'undefined') {
     const userJson = localStorage.getItem('donateTransparentlyCurrentUser');
     return userJson ? JSON.parse(userJson) : null;
