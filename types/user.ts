@@ -1,3 +1,4 @@
+import { Donation } from "./index";
 export interface User {
   id: string;
   email: string;
@@ -20,4 +21,6 @@ export interface User {
   coverImage?: string;
   establishedYear?: number;
   location?: string;
+  donationHistory?: Donation[];
 }
+

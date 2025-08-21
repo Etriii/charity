@@ -4,7 +4,18 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { Pencil, ArrowLeft, User as UserIcon, DollarSign, Shield, Heart, Loader2, X } from "lucide-react";
 import Link from "next/link";
-import Wallet from "@/components/Wallet";
+import Wallet from "../../../../components/Wallet";
+import {
+  getUsersFromStorage,
+  setUsersInStorage,
+  getCurrentSession,
+  setCurrentSession,
+  updateDonationEmailRecords,
+  getUserDonations,
+  isEmailUnique
+} from "../../../../lib/localStorageUtils";
+
+
 type Donation = {
   organization: string;
   donation: string;
@@ -14,43 +25,14 @@ type Donation = {
   charity: string;
 };
 
-interface User {
-  username: string;
-  email: string;
-  password: string;
-  balance: number;
-  id: string;
-  createdAt: string;
-}
-
 type UserType = {
   name: string;
   email: string;
-  profileImage: string;
   balance: number;
   donationHistory: Donation[];
   readonly createdAt: string;
 };
 
-interface DonationRecord {
-  amount: number;
-  anonymous: boolean;
-  charity: string;
-  date: string;
-  datetime: string;
-  email: string;
-  organization: string;
-  type: string;
-}
-
-// get users from localstorage
-const getUsersFromStorage = (): User[] => {
-  if (typeof window !== 'undefined') {
-    const usersJson = localStorage.getItem('donateTransparentlyUsers');
-    return usersJson ? JSON.parse(usersJson) : [];
-  }
-  return [];
-};
 
 const setUsersInStorage = (users: User[]) => {
   if (typeof window !== 'undefined') {
@@ -179,6 +161,7 @@ const isEmailUnique = (email: string, currentUserEmail: string): boolean => {
   );
 };
 
+
 export default function UserProfile(): JSX.Element {
   const router = useRouter();
   const params = useParams();
@@ -190,7 +173,6 @@ export default function UserProfile(): JSX.Element {
   const [user, setUser] = useState<UserType>({
     name: "",
     email: "",
-    profileImage: "/images/default_user.jpg",
     balance: 0,
     donationHistory: [],
     createdAt: new Date().toISOString(),
@@ -232,25 +214,25 @@ export default function UserProfile(): JSX.Element {
       const userDonations = getUserDonations(foundUser.email);
 
       setUser({
-        name: foundUser.username,
+        name: user?.name ?? "",
         email: foundUser.email,
-        profileImage: "/images/default_user.jpg",
         donationHistory: userDonations,
-        balance: foundUser.balance,
+        balance: foundUser.balance ?? 0,
         createdAt: new Date(foundUser.createdAt).toLocaleDateString("en-US", {
           year: "numeric",
           month: "numeric",
           day: "numeric",
         }),
       });
-      setTempName(foundUser.username);
+
+      setTempName(foundUser.username ?? "");
       setTempEmail(foundUser.email);
     } else {
       setError("User not found");
     }
 
     setLoading(false);
-  }, [decodedEmail]);
+  }, [decodedEmail, user?.name]);
 
   // date format = August 19, 2025
   const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -553,18 +535,18 @@ export default function UserProfile(): JSX.Element {
 
                 <div>
                   <div className="flex justify-between">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                    <DollarSign size={20} className="text-blue-600" />
-                    Donation History
-                  </h3>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                      <DollarSign size={20} className="text-blue-600" />
+                      Donation History
+                    </h3>
 
-                          <button
-                            onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
-                            className="text-grey-50 hover:text-purple-600 transition-colors text-sm"
-                          >
-                            View All Donations
-                          </button>
-                        </div>
+                    <button
+                      onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
+                      className="text-grey-50 hover:text-purple-600 transition-colors text-sm"
+                    >
+                      View All Donations
+                    </button>
+                  </div>
 
                   {user.donationHistory.length === 0 ? (
                     <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
@@ -718,7 +700,7 @@ export default function UserProfile(): JSX.Element {
                 disabled={!!emailValidationError}
                 className={`flex-1 px-4 py-2.5 rounded-lg transition-colors ${emailValidationError
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                  : "bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
                   }`}
               >
                 Save Changes
