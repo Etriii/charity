@@ -328,10 +328,10 @@ export default function DonationHistory(): JSX.Element {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Anonymous</p>
-                <p className="text-2xl font-bold text-orange-600">{anonymousDonations}</p>
+                <p className="text-2xl font-bold text-gray-600">{anonymousDonations}</p>
               </div>
-              <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
-                <Shield className="h-6 w-6 text-orange-600" />
+              <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center">
+                <Shield className="h-6 w-6 text-gray-600" />
               </div>
             </div>
           </div>

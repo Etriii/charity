@@ -546,8 +546,8 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
 
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center">
-              <div className="bg-orange-100 rounded-full p-3 mr-4">
-                <CalendarIcon className="h-6 w-6 text-orange-600" />
+              <div className="bg-pink-100 rounded-full p-3 mr-4">
+                <CalendarIcon className="h-6 w-6 text-pink-600" />
               </div>
               <div>
                 <p className="text-sm text-gray-500">Member Since</p>

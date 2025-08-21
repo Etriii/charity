@@ -4,7 +4,18 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { Pencil, ArrowLeft, User as UserIcon, DollarSign, Shield, Heart, Loader2, X } from "lucide-react";
 import Link from "next/link";
-import Wallet from "@/components/Wallet";
+import Wallet from "../../../../components/Wallet";
+import {
+  getUsersFromStorage,
+  setUsersInStorage,
+  getCurrentSession,
+  setCurrentSession,
+  updateDonationEmailRecords,
+  getUserDonations,
+  isEmailUnique
+} from "../../../../lib/localStorageUtils";
+
+
 type Donation = {
   organization: string;
   donation: string;
@@ -14,170 +25,15 @@ type Donation = {
   charity: string;
 };
 
-interface User {
-  username: string;
-  email: string;
-  password: string;
-  balance: number;
-  id: string;
-  createdAt: string;
-}
-
 type UserType = {
   name: string;
   email: string;
-  profileImage: string;
   balance: number;
   donationHistory: Donation[];
   readonly createdAt: string;
 };
 
-interface DonationRecord {
-  amount: number;
-  anonymous: boolean;
-  charity: string;
-  date: string;
-  datetime: string;
-  email: string;
-  organization: string;
-  type: string;
-}
 
-// get users from localstorage
-const getUsersFromStorage = (): User[] => {
-  if (typeof window !== 'undefined') {
-    const usersJson = localStorage.getItem('donateTransparentlyUsers');
-    return usersJson ? JSON.parse(usersJson) : [];
-  }
-  return [];
-};
-
-const setUsersInStorage = (users: User[]) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('donateTransparentlyUsers', JSON.stringify(users));
-  }
-};
-
-export const getCurrentSession = (): User | null => {
-  if (typeof window !== 'undefined') {
-    const userJson = localStorage.getItem('donateTransparentlyCurrentUser');
-    return userJson ? JSON.parse(userJson) : null;
-  }
-  return null;
-};
-
-export const setCurrentSession = (user: User) => {
-  if (typeof window !== 'undefined') {
-    if (user) {
-      localStorage.setItem('donateTransparentlyCurrentUser', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('donateTransparentlyCurrentUser');
-    }
-  }
-};
-
-// get donations from localstorage
-const getDonationsFromStorage = (): DonationRecord[] => {
-  if (typeof window !== 'undefined') {
-    const donationsJson = localStorage.getItem('donations');
-    if (donationsJson) {
-      try {
-        const parsed = JSON.parse(donationsJson);
-        return Array.isArray(parsed) ? parsed : [parsed];
-      } catch (error) {
-        console.error('Error parsing donations from localStorage:', error);
-        return [];
-      }
-    }
-  }
-  return [];
-};
-
-// set donations to localstorage
-const setDonationsToStorage = (donations: DonationRecord[]) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('donations', JSON.stringify(donations));
-  }
-};
-
-// get recent donations from localstorage
-const getRecentDonationsFromStorage = (): DonationRecord[] => {
-  if (typeof window !== 'undefined') {
-    const recentDonationsJson = localStorage.getItem('recentDonations');
-    if (recentDonationsJson) {
-      try {
-        const parsed = JSON.parse(recentDonationsJson);
-        return Array.isArray(parsed) ? parsed : [parsed];
-      } catch (error) {
-        console.error('Error parsing recent donations from localStorage:', error);
-        return [];
-      }
-    }
-  }
-  return [];
-};
-
-// set recent donations to localstorage
-const setRecentDonationsToStorage = (donations: DonationRecord[]) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('recentDonations', JSON.stringify(donations));
-  }
-};
-
-// update email in all donation records when user changes email
-const updateDonationEmailRecords = (oldEmail: string, newEmail: string) => {
-  // update donations
-  const donations = getDonationsFromStorage();
-  const updatedDonations = donations.map(donation => {
-    if (donation.email?.toLowerCase() === oldEmail.toLowerCase()) {
-      return { ...donation, email: newEmail };
-    }
-    return donation;
-  });
-  setDonationsToStorage(updatedDonations);
-
-  // update recent donations
-  const recentDonations = getRecentDonationsFromStorage();
-  const updatedRecentDonations = recentDonations.map(donation => {
-    if (donation.email?.toLowerCase() === oldEmail.toLowerCase()) {
-      return { ...donation, email: newEmail };
-    }
-    return donation;
-  });
-  setRecentDonationsToStorage(updatedRecentDonations);
-};
-
-// get donations for the current logged in user by email
-const getUserDonations = (userEmail: string): Donation[] => {
-  const donations = getDonationsFromStorage();
-
-  const filteredAndSorted = donations
-    .filter(donation => donation.email?.toLowerCase() === userEmail.toLowerCase())
-    .sort((a, b) => {
-      const dateA = new Date(a.datetime || a.date);
-      const dateB = new Date(b.datetime || b.date);
-
-      return dateB.getTime() - dateA.getTime();
-    });
-
-  return filteredAndSorted.map(donation => ({
-    organization: donation.organization || donation.charity || 'Unknown Organization',
-    donation: `${donation.amount}`,
-    date: donation.date || new Date(donation.datetime).toLocaleDateString(),
-    type: donation.type,
-    anonymous: donation.anonymous,
-    charity: donation.charity
-  }));
-};
-
-// checks if email is unique (execpt current user)
-const isEmailUnique = (email: string, currentUserEmail: string): boolean => {
-  const users = getUsersFromStorage();
-  return !users.some(user =>
-    user.email.toLowerCase() === email.toLowerCase() &&
-    user.email.toLowerCase() !== currentUserEmail.toLowerCase()
-  );
-};
 
 export default function UserProfile(): JSX.Element {
   const router = useRouter();
@@ -190,7 +46,6 @@ export default function UserProfile(): JSX.Element {
   const [user, setUser] = useState<UserType>({
     name: "",
     email: "",
-    profileImage: "/images/default_user.jpg",
     balance: 0,
     donationHistory: [],
     createdAt: new Date().toISOString(),
@@ -232,25 +87,25 @@ export default function UserProfile(): JSX.Element {
       const userDonations = getUserDonations(foundUser.email);
 
       setUser({
-        name: foundUser.username,
+        name: user?.name ?? "",
         email: foundUser.email,
-        profileImage: "/images/default_user.jpg",
         donationHistory: userDonations,
-        balance: foundUser.balance,
+        balance: foundUser.balance ?? 0,
         createdAt: new Date(foundUser.createdAt).toLocaleDateString("en-US", {
           year: "numeric",
           month: "numeric",
           day: "numeric",
         }),
       });
-      setTempName(foundUser.username);
+
+      setTempName(foundUser.username ?? "");
       setTempEmail(foundUser.email);
     } else {
       setError("User not found");
     }
 
     setLoading(false);
-  }, [decodedEmail]);
+  }, [decodedEmail, user?.name]);
 
   // date format = August 19, 2025
   const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -553,18 +408,18 @@ export default function UserProfile(): JSX.Element {
 
                 <div>
                   <div className="flex justify-between">
-                  <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                    <DollarSign size={20} className="text-blue-600" />
-                    Donation History
-                  </h3>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                      <DollarSign size={20} className="text-blue-600" />
+                      Donation History
+                    </h3>
 
-                          <button
-                            onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
-                            className="text-grey-50 hover:text-purple-600 transition-colors text-sm"
-                          >
-                            View All Donations
-                          </button>
-                        </div>
+                    <button
+                      onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
+                      className="text-grey-50 hover:text-purple-600 transition-colors text-sm"
+                    >
+                      View All Donations
+                    </button>
+                  </div>
 
                   {user.donationHistory.length === 0 ? (
                     <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
@@ -718,7 +573,7 @@ export default function UserProfile(): JSX.Element {
                 disabled={!!emailValidationError}
                 className={`flex-1 px-4 py-2.5 rounded-lg transition-colors ${emailValidationError
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                  : "bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
                   }`}
               >
                 Save Changes
