@@ -538,68 +538,74 @@ export default function UserProfile(): JSX.Element {
 
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <Wallet user={user} getUsers={getUsersFromStorage}/>
+              <Wallet user={user} getUsers={getUsersFromStorage} />
             </div>
             {/* donation history card */}
-            <div className="bg-white rounded-2xl shadow-md overflow-hidden h-full">
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                  <DollarSign size={20} className="text-blue-600" />
-                  Donation History
-                </h3>
+            <div className="bg-white rounded-2xl shadow-md overflow-hidden h-[90%]">
+              <div className="p-6 flex flex-col h-full">
 
-                {user.donationHistory.length === 0 ? (
-                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <DollarSign size={24} className="text-gray-500" />
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                    <DollarSign size={20} className="text-blue-600" />
+                    Donation History
+                  </h3>
+
+                  {user.donationHistory.length === 0 ? (
+                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+                      <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <DollarSign size={24} className="text-gray-500" />
+                      </div>
+                      <p className="text-gray-600 text-lg mb-2">No donations yet</p>
+                      <p className="text-gray-500 text-sm">Your donation history will appear here once you make a donation.</p>
                     </div>
-                    <p className="text-gray-600 text-lg mb-2">No donations yet</p>
-                    <p className="text-gray-500 text-sm">Your donation history will appear here once you make a donation.</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-4">
-                      {user.donationHistory.slice(0, 5).map((donation, i) => (
-                        <div key={i} className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="font-medium text-gray-800">{donation.organization}</h4>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-sm text-gray-500">{donation.date}</span>
-                                {donation.anonymous && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                                    <Shield size={12} />
-                                    Anonymous
-                                  </span>
-                                )}
+                  ) : (
+                    <>
+                      <div className="space-y-4">
+                        {user.donationHistory.slice(0, 5).map((donation, i) => (
+                          <div key={i} className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className="font-medium text-gray-800">{donation.organization}</h4>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className="text-sm text-gray-500">{donation.date}</span>
+                                  {donation.anonymous && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                      <Shield size={12} />
+                                      Anonymous
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                            <div className="text-right">
-                              <span className="font-semibold text-green-600">{donation.donation}</span>
-                              <div className="mt-1">
-                                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                                  {donation.type || 'Direct'}
-                                </span>
+                              <div className="text-right">
+                                <span className="font-semibold text-green-600">{donation.donation}</span>
+                                <div className="mt-1">
+                                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                    {donation.type || 'Direct'}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {user.donationHistory.length > 5 && (
-                      <div className="mt-4 text-end">
-                        <button
-                          onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
-                          className="px-4 py-2 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-sm"
-                        >
-                          View All {user.donationHistory.length} Donations
-                        </button>
+                        ))}
                       </div>
-                    )}
 
-                    {/* total donated */}
-                    <div className="mt-6 p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-blue-100">
+                      {user.donationHistory.length > 5 && (
+                        <div className="mt-4 text-end">
+                          <button
+                            onClick={() => router.push(`/history/donation_history/${encodeURIComponent(user.email)}`)}
+                            className="px-4 py-2 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors text-sm"
+                          >
+                            View All {user.donationHistory.length} Donations
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {user.donationHistory.length > 0 && (
+                  <div className="mt-auto pt-6">
+                    <div className="p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-blue-100">
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                         <div>
                           <h4 className="text-blue-800 font-semibold mb-1">Total Donated</h4>
@@ -612,7 +618,7 @@ export default function UserProfile(): JSX.Element {
                         </div>
                       </div>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </div>
@@ -663,8 +669,8 @@ export default function UserProfile(): JSX.Element {
                   value={tempEmail}
                   onChange={(e) => setTempEmail(e.target.value)}
                   className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${emailValidationError
-                      ? "border-red-300 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-blue-500"
+                    ? "border-red-300 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
                     }`}
                   placeholder="Enter your email address"
                 />
@@ -693,8 +699,8 @@ export default function UserProfile(): JSX.Element {
                 }}
                 disabled={!!emailValidationError}
                 className={`flex-1 px-4 py-2.5 rounded-lg transition-colors ${emailValidationError
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
                   }`}
               >
                 Save Changes
