@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { HeartIcon, MapPinIcon, CalendarIcon } from '@heroicons/react/24/solid';
 import DonationModal from './DonationModal';
 
@@ -10,13 +11,14 @@ interface CharityCardProps {
   organizations: string[];
   setIsModalOpen: (isOpen: boolean) => void;
   isLoggedIn: boolean;
-  image: string; 
+  image?: string;
   category?: string;
   location?: string;
   establishedYear?: string;
   donorCount?: number;
   coverImage?: string;
   logo?: string;
+  onDonateClick?: () => void;
 }
 
 const CharityCard: React.FC<CharityCardProps> = ({
@@ -32,47 +34,37 @@ const CharityCard: React.FC<CharityCardProps> = ({
   establishedYear = "2018",
   donorCount = 4,
   coverImage,
-  logo
-
+  logo,
+  onDonateClick
 }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
 
   const handleDonateClick = () => {
-    if (!isLoggedIn) {
+    if (onDonateClick) {
+      onDonateClick();
+    } else if (!isLoggedIn) {
       setIsModalOpen(true);
     } else {
       setIsDonationModalOpen(true);
     }
   };
 
-  console.log(`Organizations for ${name}:`, organizations);
-
   return (
     <>
-      <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 flex flex-col justify-between">
-        
-        {/* Charity Image */}
-        <div className="w-full h-48 mb-4">
-          <img 
-            src={image} 
-            alt={name} 
-            className="w-full h-full object-cover rounded-xl"
-          />
-        </div>
-        <div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">{name}</h3>
-          <p className="text-gray-600 mb-4 leading-relaxed">{description}</p>
       <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col">
-        {/* cover */}
+        {/* Cover Image */}
         <div className="relative">
-          <div
-            className="h-48 bg-gradient-to-br from-purple-500 to-pink-600"
-            style={{
-              backgroundImage: coverImage ? `url(${coverImage})` : undefined,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          />
+          <div className="h-48 bg-gradient-to-br from-purple-500 to-pink-600 relative overflow-hidden rounded-t-2xl">
+            {(image || coverImage) && (
+              <Image
+                src={image || coverImage || ''}
+                alt={`${name} cover image`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            )}
+          </div>
           <div className="absolute top-4 right-4">
             <span className="bg-white/90 text-gray-800 text-xs font-medium px-3 py-1 rounded-full">
               {category}
@@ -80,15 +72,20 @@ const CharityCard: React.FC<CharityCardProps> = ({
           </div>
         </div>
 
-          <div className="p-6 flex flex-col flex-grow">
-          {/* header w/ logo & title */}
+        <div className="p-6 flex flex-col flex-grow">
+          {/* Header with logo & title */}
           <div className="flex items-center space-x-3 mb-3">
-            <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-              {logo ? (
-                <image href={logo} className="h-8 w-8 rounded-full">
-                  <title>{name}</title>
-                </image>
-              ) : (
+            <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center relative overflow-hidden">
+              {logo && (
+                <Image 
+                  src={logo} 
+                  alt={`${name} logo`}
+                  fill
+                  className="object-cover rounded-full"
+                  sizes="48px"
+                />
+              )}
+              {!logo && (
                 <span className="text-white font-bold text-lg">{name.charAt(0)}</span>
               )}
             </div>
@@ -105,12 +102,13 @@ const CharityCard: React.FC<CharityCardProps> = ({
             {description}
           </p>
 
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">Organizations:</h4>
-          <div className="space-y-1 mb-4">
-            <div className="flex flex-wrap gap-2 mt-2">
+          {/* Organizations */}
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">Organizations:</h4>
+            <div className="flex flex-wrap gap-2">
               {organizations && organizations.length > 0 ? (
-                organizations.map((org) => (
-                  <div key={org} className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
+                organizations.map((org, index) => (
+                  <div key={index} className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
                     {org}
                   </div>
                 ))
@@ -120,7 +118,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
             </div>
           </div>
 
-          {/* stats grid */}
+          {/* Stats grid */}
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="font-bold text-purple-700 text-lg">
@@ -134,27 +132,13 @@ const CharityCard: React.FC<CharityCardProps> = ({
             </div>
           </div>
 
-        <div className="sm:flex space-x-4 mt-auto space-y-2">
-          <button
-            onClick={handleDonateClick}  
-            className="flex-1 bg-gradient-to-r w-full cursor-pointer from-purple-500 to-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center space-x-2"
-          >
-            <HeartIcon className="h-4 w-4" />
-            <span className=' text-nowrap'>Donate Now</span>
-          </button>
-
-          <Link
-            href={`/charity/charity_profile/${name.replace(/\s+/g, "-")}`}
-            className="flex-1 text-nowrap bg-gray-100 text-gray-700 font-medium py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center flex items-center justify-center"
-          >
-            Learn More
-          </Link>
           <div className="flex items-center text-xs text-gray-500 mb-4">
             <CalendarIcon className="h-3 w-3 mr-1" />
             Established {establishedYear}
           </div>
 
-            <div className="flex space-x-3 mt-auto pt-4">
+          {/* Action buttons */}
+          <div className="flex space-x-3 mt-auto">
             <Link
               href={`/charity/charity_profile/${name.replace(/\s+/g, "-")}`}
               className="flex-1 text-sm bg-gray-100 text-gray-700 font-medium py-2.5 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center flex items-center justify-center"
@@ -163,7 +147,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
             </Link>
             <button
               onClick={handleDonateClick}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+              className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2"
             >
               <HeartIcon className="h-4 w-4" />
               <span className="text-sm">Donate</span>
@@ -172,7 +156,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
         </div>
       </div>
 
-      {/* donation modal */}
+      {/* Donation modal */}
       <DonationModal
         isOpen={isDonationModalOpen}
         onClose={() => setIsDonationModalOpen(false)}
