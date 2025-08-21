@@ -1,9 +1,4 @@
 import React from "react";
-import {
-  CubeTransparentIcon,
-  ClipboardDocumentCheckIcon,
-  CheckCircleIcon as HeroCheckCircleIcon,
-} from "@heroicons/react/24/solid";
 import FeatureCard from "./FeatureCard";
 import CharityCard from "./CharityCard";
 import TestimonialCard from "./TestimonialCard";
