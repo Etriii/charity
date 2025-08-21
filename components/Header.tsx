@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { HeaderProps } from "../types";
 import { useRouter } from "next/navigation";
+import { getCurrentSession } from "app/profile/profile_page/[email]/page";
 
 const Header: React.FC<HeaderProps> = ({
   isLoggedIn,
@@ -93,10 +94,12 @@ const Header: React.FC<HeaderProps> = ({
 
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                <div className="px-4 py-2 border-b border-gray-200">Yes</div>
+                <div className='px-4 py-2 border-b border-gray-200'>
+                  {getCurrentSession()?.username}
+                </div>
                 <button
                   onClick={handleProfileClick}
-                  className=" w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
+                  className="cursor-pointer w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
                 >
                   <UserIcon className="h-4 w-4" />
                   <span>Profile</span>
@@ -104,7 +107,7 @@ const Header: React.FC<HeaderProps> = ({
 
                 <button
                   onClick={handleWalletClick}
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
+                  className="cursor-pointer w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-150"
                 >
                   <WalletIcon className="h-4 w-4" />
                   <span>Wallet</span>
@@ -114,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({
 
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors duration-150"
+                  className="cursor-pointer w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors duration-150"
                 >
                   <ArrowRightOnRectangleIcon className="h-4 w-4" />
                   <span>Log Out</span>

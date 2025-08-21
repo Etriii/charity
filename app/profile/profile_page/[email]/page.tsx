@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { Pencil, ArrowLeft, User, DollarSign, Shield, Heart, Loader2, X } from "lucide-react";
 import Link from "next/link";
+import Wallet from "@/components/Wallet";
 
 type Donation = {
   organization: string;
@@ -17,6 +18,7 @@ interface User {
   username: string;
   email: string;
   password: string;
+  balance: number;
   id: string;
   createdAt: string;
 }
@@ -25,6 +27,7 @@ type UserType = {
   name: string;
   email: string;
   profileImage: string;
+  balance: number;
   donationHistory: Donation[];
   readonly createdAt: string;
 };
@@ -55,7 +58,7 @@ const setUsersInStorage = (users: User[]) => {
   }
 };
 
-const getCurrentSession = (): User | null => {
+export const getCurrentSession = (): User | null => {
   if (typeof window !== 'undefined') {
     const userJson = localStorage.getItem('donateTransparentlyCurrentUser');
     return userJson ? JSON.parse(userJson) : null;
@@ -181,9 +184,9 @@ export default function UserProfile(): JSX.Element {
     name: "",
     email: "",
     profileImage: "/images/default_user.jpg",
+    balance: 0,
     donationHistory: [],
     createdAt: new Date().toISOString(),
-
   });
 
   const [loading, setLoading] = useState(true);
@@ -226,6 +229,7 @@ export default function UserProfile(): JSX.Element {
         email: foundUser.email,
         profileImage: "/images/default_user.jpg",
         donationHistory: userDonations,
+        balance: foundUser.balance,
         createdAt: new Date(foundUser.createdAt).toLocaleDateString("en-US", {
           year: "numeric",
           month: "numeric",
@@ -445,11 +449,11 @@ export default function UserProfile(): JSX.Element {
     : "None yet";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 px-4 py-8">
       <div className="max-w-6xl mx-auto">
         <Link
           href="/"
-          className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+          className="flex items-center text-gray-600 hover:text-purple-800 mb-6 transition-colors"
         >
           <ArrowLeft size={20} className="mr-2" />
           Back
@@ -471,7 +475,7 @@ export default function UserProfile(): JSX.Element {
               <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <User size={20} className="text-blue-600" />
+                    <User size={20} className="text-purple-600" />
                     Profile
                   </h2>
                   <button
@@ -484,7 +488,7 @@ export default function UserProfile(): JSX.Element {
                 </div>
 
                 <div className="flex justify-center mb-4">
-                  <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center">
                     <User size={32} className="text-white" />
                   </div>
                 </div>
@@ -532,7 +536,10 @@ export default function UserProfile(): JSX.Element {
             </div>
           </div>
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
+            <div>
+              <Wallet user={user} getUsers={getUsersFromStorage}/>
+            </div>
             {/* donation history card */}
             <div className="bg-white rounded-2xl shadow-md overflow-hidden h-full">
               <div className="p-6">
@@ -592,7 +599,7 @@ export default function UserProfile(): JSX.Element {
                     )}
 
                     {/* total donated */}
-                    <div className="mt-6 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                    <div className="mt-6 p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-blue-100">
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                         <div>
                           <h4 className="text-blue-800 font-semibold mb-1">Total Donated</h4>
