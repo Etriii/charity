@@ -13,8 +13,6 @@ type Donation = {
   anonymous?: boolean;
 };
 
-
-
 interface User {
   username: string;
   email: string;
