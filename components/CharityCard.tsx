@@ -36,6 +36,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
   coverImage,
   logo,
   onDonateClick,
+
 }) => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
 
