@@ -248,7 +248,7 @@ export default function DonationHistory(): JSX.Element {
           <div>
             <button
               onClick={() => router.back()}
-              className="flex items-center text-blue-600 hover:text-blue-800 mb-4 transition-colors"
+              className="flex items-center text-gray-600 hover:text-purple-800 mb-4 transition-colors"
             >
               <ArrowLeft size={20} className="mr-2" />
               Back to Profile
@@ -474,7 +474,7 @@ export default function DonationHistory(): JSX.Element {
                             onClick={() => goToPage(pageNumber)}
                             className={`px-4 py-2 rounded-lg border transition-colors ${
                               isCurrentPage
-                                ? 'bg-blue-600 text-white border-blue-600'
+                                ? 'bg-purple-600 text-white border-purple-600'
                                 : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
                             }`}
                           >
