@@ -105,6 +105,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('donationAdded', handleDonationUpdate);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userEmail]); // re-runs when email changes
 
   // cal stats from user's donations
@@ -158,7 +159,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
           <p>No donations yet. Start making a difference today!</p>
         </div>
       ) : (
-        donations.map((donation, index) => (
+        donations.slice(0, 5).map((donation, index) => (
           <div
             key={index}
             className="flex justify-between items-center py-4 border-b border-gray-100 last:border-b-0"

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { use } from "react";

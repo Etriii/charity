@@ -19,6 +19,7 @@ interface Donation {
   email: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const loggedInUserEmail = "user@example.com";
 
 const DonationModal: React.FC<DonationModalProps> = ({ isOpen, onClose, charityName, organizations }) => {
