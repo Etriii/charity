@@ -34,7 +34,7 @@ type Charity = {
 const charitiesData: Record<string, Charity> = {
   unicef: {
     name: "UNICEF",
-    totalReceived: "$500",
+    totalReceived: "$40K",
     organizations: ["UNICEF USA", "UNICEF International"],
     fullDescription:
       "UNICEF, the United Nations Children's Fund, works in the world's toughest places. United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
@@ -43,8 +43,8 @@ const charitiesData: Record<string, Charity> = {
     established: "1946",
     category: "Children & Education",
     location: "Global",
-    donors: 15,
-    avgGift: 34,
+    donors: 20,
+    avgGift: 35,
     donationHistory: [
       { donor: "Emily Chen", amount: 200, date: "2024-04-05" },
       { donor: "John Smith", amount: 200, date: "2024-02-20" },
@@ -55,7 +55,7 @@ const charitiesData: Record<string, Charity> = {
 
   "red-cross": {
     name: "Red Cross",
-    totalReceived: "$100",
+    totalReceived: "$75K",
     organizations: ["American Red Cross", "International Red Cross"],
     fullDescription:
       "The Red Cross, part of the global Red Cross and Red Crescent network, provides humanitarian aid. We are an International humanitarian movement providing emergency assistance, disaster relief, and health education.",
@@ -64,8 +64,8 @@ const charitiesData: Record<string, Charity> = {
     established: "1863",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 2,
-    avgGift: 8,
+    donors: 20,
+    avgGift: 25,
     donationHistory: [
       { donor: "Michael Lee", amount: 75, date: "2023-11-10" },
       { donor: "Sarah Park", amount: 25, date: "2024-01-08" },
@@ -73,7 +73,7 @@ const charitiesData: Record<string, Charity> = {
   },
   "doctors-without-borders-(msf)": {
     name: "Doctors Without Borders (MSF)",
-    totalReceived: "$450",
+    totalReceived: "$50K",
     organizations: ["MSF USA", "MSF International"],
     fullDescription:
       "Doctors Without Borders/Médecins Sans Frontières (MSF) is an international, independent organization who delivers emergency aid at all crisis.",
@@ -82,8 +82,8 @@ const charitiesData: Record<string, Charity> = {
     established: "1971",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 3,
-    avgGift: 4,
+    donors: 20,
+    avgGift: 15,
     donationHistory: [
       { donor: "Sheena Parky", amount: 150, date: "2024-01-20" },
       { donor: "Meisha Tiangco", amount: 50, date: "2024-01-08" },
@@ -92,17 +92,17 @@ const charitiesData: Record<string, Charity> = {
   },
   "world-wildlife-fund-(wwf)": {
     name: "World Wildlife Fund (WWF)",
-    totalReceived: "$150",
+    totalReceived: "$45K",
     organizations: ["MWWF US", "WWF International"],
     fullDescription:
       "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
     image: "/images/WWFBG.jpg",
     profile_image: "/images/WWF.jpg",
     established: "1961",
-    category: "Humanitarian Aid",
+    category: "Nature & WildLife Resources",
     location: "Global",
-    donors: 2,
-    avgGift: 3,
+    donors: 20,
+    avgGift: 20,
     donationHistory: [
       { donor: "Lyra Patinson", amount: 75, date: "2024-01-08" },
       { donor: "Mista Mone", amount: 75, date: "2023-11-10" },
@@ -110,7 +110,7 @@ const charitiesData: Record<string, Charity> = {
   },
   "salvation-army": {
     name: "Salvation Army",
-    totalReceived: "$210",
+    totalReceived: "$40K",
     organizations: ["The Salvation Army USA", "The Salvation Army International"],
     fullDescription:
       "International charitable organization providing relief, rehabilitation, and community support.",
@@ -119,8 +119,8 @@ const charitiesData: Record<string, Charity> = {
     established: "1865",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 3,
-    avgGift: 8,
+    donors: 20,
+    avgGift: 15,
     donationHistory: [
       { donor: "Michael Rey", amount: 110, date: "2025-1-10" },
       { donor: "Mint Park", amount: 40, date: "2024-01-08" },
@@ -129,7 +129,7 @@ const charitiesData: Record<string, Charity> = {
   },
   oxfam: {
     name: "Oxfam",
-    totalReceived: "$402",
+    totalReceived: "$60K",
     organizations: ["Oxfam America", "Oxfam International"],
     fullDescription:
       "Global movement to end the injustice of poverty through humanitarian aid, advocacy, and development.",
@@ -138,7 +138,7 @@ const charitiesData: Record<string, Charity> = {
     established: "1942",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 2,
+    donors: 25,
     avgGift: 2,
     donationHistory: [
       { donor: "Sarah Lee", amount: 300, date: "2024-01-08" },
@@ -181,7 +181,10 @@ export default function CharityPage({ params }: PageProps) {
           >
             &larr; Back
           </button>
-          <span className="ml-auto text-xl font-bold">{charity.name}</span>
+         <span className="bg-gradient-to-br from-purple-500 to-pink-600 bg-clip-text text-transparent text-xl font-bold ml-auto">
+  CharityFlow
+</span>
+          {/* <span className="ml-auto text-xl font-bold">{charity.name}</span> */}
         </div>
       </header>
 
@@ -265,7 +268,7 @@ export default function CharityPage({ params }: PageProps) {
             <div className="flex gap-30 justify-center text-gray-600 mb-6">
               <div className="text-center">
                 <p className="text-2xl font-extrabold text-purple-600">
-                  {charity.donors}
+                  {charity.donors}K
                 </p>
                 <p className="text-sm">Donors</p>
               </div>

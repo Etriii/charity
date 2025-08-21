@@ -14,10 +14,10 @@ interface CharityCardProps {
   image?: string;
   category?: string;
   location?: string;
-  establishedYear?: string;
-  donorCount?: number;
+  donorCount?: string;
   coverImage?: string;
   logo?: string;
+  established?: number;
   onDonateClick?: () => void;
 }
 
@@ -29,12 +29,12 @@ const CharityCard: React.FC<CharityCardProps> = ({
   setIsModalOpen,
   isLoggedIn,
   image,
-  category = "Water & Sanitation",
+  category,
   location = "Global",
-  establishedYear = "2018",
-  donorCount = 4,
+  donorCount = "20K+",
   coverImage,
   logo,
+  established,
   onDonateClick,
 
 }) => {
@@ -102,7 +102,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
               </div>
               <div className="flex items-center text-xs text-gray-500 mb-4">
                 <CalendarIcon className="h-3 w-3 mr-1" />
-                Established {establishedYear}
+                Established {established}
               </div>
             </div>
           </div>
@@ -138,7 +138,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="text-center p-3 bg-purple-50 rounded-lg">
               <div className="font-bold text-purple-700 text-lg">
-                ${received.toLocaleString()}
+                ${received.toLocaleString()}K
               </div>
               <div className="text-gray-600 text-xs">Total Raised</div>
             </div>
