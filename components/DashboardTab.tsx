@@ -6,7 +6,6 @@ import {
   LineChart,
   YAxis,
   Tooltip,
-  Bar,
   CartesianGrid,
   Line,
 } from "recharts";
@@ -27,7 +26,7 @@ type DonationGroup = {
   key: string;
   total: number;
   count: number;
-  donations: typeof donations;
+  donations: Donation[];
 };
 
 interface DashboardTabProps {
