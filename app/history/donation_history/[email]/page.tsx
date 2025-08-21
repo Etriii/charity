@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { 
-  ArrowLeft, 
-  DollarSign, 
-  Shield, 
-  Calendar, 
-  Building, 
+import {
+  ArrowLeft,
+  DollarSign,
+  Shield,
+  Calendar,
+  Building,
   Search,
   Loader2,
   Heart,
@@ -21,7 +21,9 @@ type Donation = {
   date: string;
   type?: string;
   anonymous?: boolean;
+  charity: string,
   amount?: number;
+  datetime: string;
 };
 
 interface User {
@@ -72,24 +74,33 @@ const getUsersFromStorage = (): User[] => {
 // filter donations for current user
 const getUserDonations = (userEmail: string): Donation[] => {
   const donations = getDonationsFromStorage();
-  
-  return donations
+
+  const filteredAndSorted = donations
     .filter(donation => donation.email?.toLowerCase() === userEmail.toLowerCase())
-    .map(donation => ({
-      organization: donation.organization || donation.charity || 'Unknown Organization',
-      donation: `$${donation.amount}`,
-      date: donation.date || new Date(donation.datetime).toLocaleDateString(),
-      type: donation.type,
-      anonymous: donation.anonymous,
-      amount: donation.amount
-    }))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) => {
+      const dateA = new Date(a.datetime || a.date);
+      const dateB = new Date(b.datetime || b.date);
+
+      return dateB.getTime() - dateA.getTime();
+    });
+
+  return filteredAndSorted.map(donation => ({
+    organization: donation.organization || donation.charity || 'Unknown Organization',
+    donation: `$${donation.amount}`,
+    date: donation.date || new Date(donation.datetime).toLocaleDateString(),
+    datetime: donation.datetime,
+    type: donation.type,
+    anonymous: donation.anonymous,
+    amount: donation.amount,
+    charity: donation.charity
+  }));
 };
+
 
 export default function DonationHistory(): JSX.Element {
   const router = useRouter();
   const params = useParams();
-  
+
   const emailParam = params?.email as string;
   const decodedEmail = emailParam ? decodeURIComponent(emailParam) : '';
 
@@ -99,16 +110,17 @@ export default function DonationHistory(): JSX.Element {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // filter states
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
   const [selectedAnonymous, setSelectedAnonymous] = useState("all");
   const [sortBy, setSortBy] = useState("date-desc");
-  
+
   // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
 
   // load user data and donations
   useEffect(() => {
@@ -121,7 +133,7 @@ export default function DonationHistory(): JSX.Element {
     // find current logged in user
     const users = getUsersFromStorage();
     const foundUser = users.find(u => u.email.toLowerCase() === decodedEmail.toLowerCase());
-    
+
     if (!foundUser) {
       setError("User not found");
       setLoading(false);
@@ -134,7 +146,7 @@ export default function DonationHistory(): JSX.Element {
     const userDonations = getUserDonations(foundUser.email);
     setDonations(userDonations);
     setFilteredDonations(userDonations);
-    
+
     setLoading(false);
   }, [decodedEmail]);
 
@@ -144,8 +156,12 @@ export default function DonationHistory(): JSX.Element {
 
     // search filter
     if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
       filtered = filtered.filter(donation =>
-        donation.organization.toLowerCase().includes(searchTerm.toLowerCase())
+        (donation.charity || "").toLowerCase().includes(lowerSearch) ||
+        (donation.organization || "").toLowerCase().includes(lowerSearch) ||
+        String(donation.donation || "").toLowerCase().includes(lowerSearch) ||
+        String(donation.date || "").toLowerCase().includes(lowerSearch)
       );
     }
 
@@ -160,14 +176,25 @@ export default function DonationHistory(): JSX.Element {
       filtered = filtered.filter(donation => donation.anonymous === isAnonymous);
     }
 
+
     // sort
     switch (sortBy) {
-      case "date-desc":
-        filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      case "date-desc": // newest first
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.datetime || a.date);
+          const dateB = new Date(b.datetime || b.date);
+          return dateB.getTime() - dateA.getTime();
+        });
         break;
-      case "date-asc":
-        filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+      case "date-asc": // oldest first
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.datetime || a.date);
+          const dateB = new Date(b.datetime || b.date);
+          return dateA.getTime() - dateB.getTime();
+        });
         break;
+
       case "amount-desc":
         filtered.sort((a, b) => (b.amount || 0) - (a.amount || 0));
         break;
@@ -175,7 +202,7 @@ export default function DonationHistory(): JSX.Element {
         filtered.sort((a, b) => (a.amount || 0) - (b.amount || 0));
         break;
       case "org-asc":
-        filtered.sort((a, b) => a.organization.localeCompare(b.organization));
+        filtered.sort((a, b) => a.charity.localeCompare(b.charity));
         break;
     }
 
@@ -214,7 +241,7 @@ export default function DonationHistory(): JSX.Element {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 px-6 py-8 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" />
+          <Loader2 className="animate-spin h-12 w-12 text-purple-600 mx-auto mb-4" />
           <p className="text-gray-600">Loading donation history...</p>
         </div>
       </div>
@@ -230,7 +257,7 @@ export default function DonationHistory(): JSX.Element {
             <p className="text-red-600">{error}</p>
             <button
               onClick={() => router.push('/')}
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
             >
               Go to Home
             </button>
@@ -239,6 +266,7 @@ export default function DonationHistory(): JSX.Element {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 px-4 py-8">
@@ -318,10 +346,10 @@ export default function DonationHistory(): JSX.Element {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
                   type="text"
-                  placeholder="Search organizations..."
+                  placeholder="Search charities and organizations..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
             </div>
@@ -330,7 +358,7 @@ export default function DonationHistory(): JSX.Element {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="all">All Types</option>
               {donationTypes.map(type => (
@@ -342,7 +370,7 @@ export default function DonationHistory(): JSX.Element {
             <select
               value={selectedAnonymous}
               onChange={(e) => setSelectedAnonymous(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="all">All Donations</option>
               <option value="anonymous">Anonymous Only</option>
@@ -353,13 +381,13 @@ export default function DonationHistory(): JSX.Element {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="date-desc">Newest First</option>
               <option value="date-asc">Oldest First</option>
               <option value="amount-desc">Highest Amount</option>
               <option value="amount-asc">Lowest Amount</option>
-              <option value="org-asc">Organization A-Z</option>
+              <option value="org-asc">Charity A-Z</option>
             </select>
           </div>
         </div>
@@ -383,8 +411,8 @@ export default function DonationHistory(): JSX.Element {
                 </div>
                 <p className="text-gray-600 text-lg mb-2">No donations found</p>
                 <p className="text-gray-500 text-sm">
-                  {donations.length === 0 
-                    ? "You haven't made any donations yet." 
+                  {donations.length === 0
+                    ? "You haven't made any donations yet."
                     : "Try adjusting your search or filter criteria."
                   }
                 </p>
@@ -398,9 +426,8 @@ export default function DonationHistory(): JSX.Element {
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
-                              <h4 className="font-semibold text-gray-900 text-lg mb-1">
-                                {donation.organization}
-                              </h4>
+                              <p className="text-base font-medium text-grey-600">{donation.charity}</p>
+                              <h4 className="text-sm text-gray-800">{donation.organization}</h4>
                               <div className="flex items-center gap-3 text-sm text-gray-600">
                                 <div className="flex items-center gap-1">
                                   <Calendar size={14} />
@@ -437,26 +464,25 @@ export default function DonationHistory(): JSX.Element {
                     <button
                       onClick={goToPreviousPage}
                       disabled={currentPage === 1}
-                      className={`px-4 py-2 rounded-lg border ${
-                        currentPage === 1
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
-                      } transition-colors`}
+                      className={`px-4 py-2 rounded-lg border ${currentPage === 1
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
+                        } transition-colors`}
                     >
                       Previous
                     </button>
-                    
+
                     {/* page num */}
                     <div className="flex gap-1">
                       {[...Array(totalPages)].map((_, index) => {
                         const pageNumber = index + 1;
                         const isCurrentPage = pageNumber === currentPage;
-                        
-                        const showPage = 
+
+                        const showPage =
                           pageNumber === 1 ||
                           pageNumber === totalPages ||
                           (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1);
-                          
+
                         if (!showPage) {
                           if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
                             return (
@@ -467,31 +493,29 @@ export default function DonationHistory(): JSX.Element {
                           }
                           return null;
                         }
-                        
+
                         return (
                           <button
                             key={pageNumber}
                             onClick={() => goToPage(pageNumber)}
-                            className={`px-4 py-2 rounded-lg border transition-colors ${
-                              isCurrentPage
-                                ? 'bg-purple-600 text-white border-purple-600'
-                                : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
-                            }`}
+                            className={`px-4 py-2 rounded-lg border transition-colors ${isCurrentPage
+                              ? 'bg-purple-600 text-white border-purple-600'
+                              : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
+                              }`}
                           >
                             {pageNumber}
                           </button>
                         );
                       })}
                     </div>
-                    
+
                     <button
                       onClick={goToNextPage}
                       disabled={currentPage === totalPages}
-                      className={`px-4 py-2 rounded-lg border ${
-                        currentPage === totalPages
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
-                      } transition-colors`}
+                      className={`px-4 py-2 rounded-lg border ${currentPage === totalPages
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border-gray-300'
+                        } transition-colors`}
                     >
                       Next
                     </button>
