@@ -362,7 +362,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
 
   return (
     <div className="space-y-8">
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8">
+      <div className="bg-gradient-to-r from-purple-50 to-purple-50 rounded-3xl p-8">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h2>

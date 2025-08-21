@@ -39,6 +39,7 @@ interface Charity {
     received: number;
     organizations: string[];
     likes: number;
+     image: string;
 }
 
 
@@ -194,50 +195,56 @@ const LoggedInHomePage: React.FC<LoggedInHomePageProps> = ({
         "Oxfam": ["Oxfam America", "Oxfam International"],
     };
 
-const charities: Charity[] = [
-  {
-    name: "UNICEF",
-    description: "United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
-    received: getCharityReceivedAmount("UNICEF"),
-    organizations: charityOrganizationsData["UNICEF"],
-    likes: 2
-  },
-  {
-    name: "Red Cross",
-    description: "International humanitarian movement providing emergency assistance, disaster relief, and health education.",
-    received: getCharityReceivedAmount("Red Cross"),
-    organizations: charityOrganizationsData["Red Cross"],
-    likes: 2
-  },
-  {
-    name: "Doctors Without Borders (MSF)",
-    description: "Medical humanitarian organization delivering emergency aid to people affected by conflict, epidemics, disasters.",
-    received: getCharityReceivedAmount("Doctors Without Borders (MSF)"),
-    organizations: charityOrganizationsData["Doctors Without Borders (MSF)"],
-    likes: 2
-  },
-  {
-    name: "World Wildlife Fund (WWF)",
-    description: "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
-    received: getCharityReceivedAmount("World Wildlife Fund (WWF)"),
-    organizations: charityOrganizationsData["World Wildlife Fund (WWF)"],
-    likes: 2
-  },
-  {
-    name: "Salvation Army",
-    description: "International charitable organization providing relief, rehabilitation, and community support.",
-    received: getCharityReceivedAmount("Salvation Army"),
-    organizations: charityOrganizationsData["Salvation Army"],
-    likes: 2
-  },
-  {
-    name: "Oxfam",
-    description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, development.",
-    received: getCharityReceivedAmount("Oxfam"),
-    organizations: charityOrganizationsData["Oxfam"],
-    likes: 2
-  },
-];
+    const charities: Charity[] = [
+        {
+            name: "UNICEF",
+            description: "United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
+            received: getCharityReceivedAmount("UNICEF"),
+            organizations: charityOrganizationsData["UNICEF"],
+            likes: 2,
+            image: "/images/UNICEFBG.jpg",
+        },
+        {
+            name: "Red Cross",
+            description: "International humanitarian movement providing emergency assistance, disaster relief, and health education.",
+            received: getCharityReceivedAmount("Red Cross"),
+            organizations: charityOrganizationsData["Red Cross"],
+            likes: 2,
+            image: "/images/RCbg1.jpg",
+        },
+        {
+            name: "Doctors Without Borders (MSF)",
+            description: "Medical humanitarian organization delivering emergency aid to people affected by conflict, epidemics, disasters.",
+            received: getCharityReceivedAmount("Doctors Without Borders (MSF)"),
+            organizations: charityOrganizationsData["Doctors Without Borders (MSF)"],
+            likes: 2,
+            image: "/images/MSFB.avif",
+        },
+        {
+            name: "World Wildlife Fund (WWF)",
+            description: "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
+            received: getCharityReceivedAmount("World Wildlife Fund (WWF)"),
+            organizations: charityOrganizationsData["World Wildlife Fund (WWF)"],
+            likes: 2,
+            image: "/images/WWFBG.jpg",
+        },
+        {
+            name: "Salvation Army",
+            description: "International charitable organization providing relief, rehabilitation, and community support.",
+            received: getCharityReceivedAmount("Salvation Army"),
+            organizations: charityOrganizationsData["Salvation Army"],
+            likes: 2,
+              image: "/images/SABG.jpg",
+        },
+        {
+            name: "Oxfam",
+            description: "Global movement to end the injustice of poverty through humanitarian aid, advocacy, development.",
+            received: getCharityReceivedAmount("Oxfam"),
+            organizations: charityOrganizationsData["Oxfam"],
+            likes: 2,
+            image: "/images/OXFBG.jpg",
+        },
+    ];
 
     const ExploreTab = () => (
         <div className="space-y-8">
@@ -303,6 +310,7 @@ const charities: Charity[] = [
                             organizations={charity.organizations}
                             setIsModalOpen={setIsModalOpen}
                             isLoggedIn={isLoggedIn}
+                            image={charity.image}
                         />
                     ))}
                 </div>
