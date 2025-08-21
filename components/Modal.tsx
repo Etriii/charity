@@ -35,7 +35,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
       <div
         ref={modalContentRef}
-        className="relative border p-4 bg-white border-gray-300 shadow-lg rounded-lg max-h-full w-full sm:w-[70%] md:w-auto max-w-[90%] transform transition-transform duration-300 scale-100"
+className="relative border p-8 bg-white border-gray-300 shadow-lg rounded-xl max-h-[94%] w-full sm:w-[70%] md:w-auto max-w-[90%] transform transition-transform duration-300 scale-100 overflow-y-auto no-scrollbar"
       >
         <h2 className="text-xl font-bold text-gray-800">{title}</h2>
         <button
