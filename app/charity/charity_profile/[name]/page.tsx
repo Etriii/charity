@@ -11,10 +11,9 @@ import {
 } from "@heroicons/react/24/solid";
 import DonationModal from "../../../../components/DonationModal";
 import { Donation } from '../../../../types/';
-import { CharityStats, PageProps } from '../../../../lib/pagePropsUtils';
+import { NextPageProps, CharityStats } from '../../../../lib/pagePropsUtils';
 
-
-// mocak or static data
+// mock or static data
 const staticCharityData: Record<string, Partial<CharityStats>> = {
   unicef: {
     name: "UNICEF",
@@ -88,12 +87,7 @@ const charityOrganizationsData: Record<string, string[]> = {
   "Oxfam": ["Oxfam America", "Oxfam International"],
 };
 
-export default function CharityPage({
-  params,
-  onDonateClick,
-  setIsModalOpen,
-  isLoggedIn = false
-}: PageProps) {
+export default function CharityPage({ params }: NextPageProps) {
   const { name } = use(params);
   const router = useRouter();
   const [charity, setCharity] = useState<CharityStats | null>(null);
@@ -104,13 +98,7 @@ export default function CharityPage({
   const staticData = staticCharityData[key];
 
   const handleDonateClick = () => {
-    if (onDonateClick) {
-      onDonateClick();
-    } else if (!isLoggedIn && setIsModalOpen) {
-      setIsModalOpen(true);
-    } else {
-      setIsDonationModalOpen(true);
-    }
+    setIsDonationModalOpen(true);
   };
 
   useEffect(() => {
@@ -121,7 +109,7 @@ export default function CharityPage({
 
     const loadCharityData = () => {
       try {
-        // load donations from localstorage
+        // load donations from localStorage
         const donationsData = localStorage.getItem("donations");
         let allDonations: Donation[] = [];
 
@@ -134,7 +122,7 @@ export default function CharityPage({
           (donation) => donation.charity === staticData.name
         );
 
-        // cal stats
+        // calculate stats
         const totalReceived = charityDonations.reduce(
           (sum, donation) => sum + donation.amount,
           0
@@ -150,7 +138,7 @@ export default function CharityPage({
         // get organizations for selected charity
         const organizations = charityOrganizationsData[staticData.name!] || [];
 
-        // formats donation history (most recent first)
+        // format donation history (most recent first)
         const donationHistory = charityDonations
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 5) // Show only last 5 donations
@@ -159,7 +147,7 @@ export default function CharityPage({
             donor: donation.anonymous ? "Anonymous Donor" : `Donor ${donation.email.split('@')[0]}`
           }));
 
-        // combines static and dynamic data
+        // combine static and dynamic data
         const charityData: CharityStats = {
           name: staticData.name!,
           totalReceived,
@@ -202,7 +190,7 @@ export default function CharityPage({
 
     loadCharityData();
 
-    // listens for donation updates from local storage
+    // listen for donation updates from local storage
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "donations") {
         loadCharityData();
@@ -315,7 +303,7 @@ export default function CharityPage({
               {charity.fullDescription}
             </p>
 
-            {/* orgs */}
+            {/* organizations */}
             <div className="mt-8">
               <h3 className="text-xl font-bold mb-3">Partner Organizations</h3>
               {charity.organizations.length > 0 ? (
