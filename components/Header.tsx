@@ -9,6 +9,7 @@ import {
 import { HeaderProps } from "../types";
 import { useRouter } from "next/navigation";
 import { getCurrentSession } from "../lib/localStorageUtils";
+
 const Header: React.FC<HeaderProps> = ({
   isLoggedIn,
   onLogout,
