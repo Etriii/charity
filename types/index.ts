@@ -89,4 +89,5 @@ export interface DonationRecord {
   email: string;
   organization: string;
   type: string;
+  donor: string;
 };

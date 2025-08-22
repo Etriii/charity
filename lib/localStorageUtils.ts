@@ -127,7 +127,9 @@ export const getUserDonations = (userEmail: string): Donation[] => {
         anonymous: donation.anonymous,
         charity: donation.charity,
         email: donation.email,
-        amount: donation.amount
+        amount: donation.amount,
+        datetime: donation.datetime,
+        donor: donation.donor,
     }));
 };
 
