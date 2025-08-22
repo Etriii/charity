@@ -14,7 +14,7 @@ export interface User {
   username?: string;
   email: string;
   password?: string;
-  balance:number;
+  balance: number;
   createdAt: string;
 }
 
@@ -51,23 +51,34 @@ export interface HeaderProps {
   isLoggedIn: boolean;
   onLogout: () => void;
   onOpenModal: () => void;
-   userEmail?: string;
+  userEmail?: string;
 }
+
+export interface PageProps {
+  params: Promise<{ name: string; organizations?: string }>;
+  onDonateClick?: () => void;
+  setIsModalOpen?: (isOpen: boolean) => void;
+  isLoggedIn?: boolean;
+}
+
 
 export interface MessageDisplayProps {
   message: Message;
 }
 
 export type Donation = {
+  donor: string;
   amount: number;
   charity: string;
   organization: string;
   type: string;
   date: string;
+    datetime: string;
   anonymous: boolean;
   email: string;
-  donation: string; 
+  donation: string;
 };
+
 
 export interface DonationRecord {
   amount: number;
