@@ -2,27 +2,34 @@
 
 import { notFound } from "next/navigation";
 import { useRouter } from "next/navigation";
-import React, { use } from "react";
+import React, { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { Calendar, MapPin, Tag, DollarSign } from "lucide-react";
 import {
   CalendarIcon,
   MapPinIcon,
 } from "@heroicons/react/24/solid";
+import DonationModal from "../../../../components/DonationModal";
 
 type Donation = {
   donor: string;
   amount: number;
   date: string;
+  charity: string;
+  organization: string;
+  anonymous: boolean;
+  datetime: string;
+  email: string;
+  type: string;
 };
 
-type Charity = {
+type CharityStats = {
   name: string;
-  totalReceived: string;
+  totalReceived: number;
   organizations: string[];
   fullDescription: string;
   image: string;
-  profile_image: string;
+  logo: string;
   established: string;
   category: string;
   location: string;
@@ -31,165 +38,265 @@ type Charity = {
   donationHistory: Donation[];
 };
 
-const charitiesData: Record<string, Charity> = {
+//mocak or static data
+const staticCharityData: Record<string, Partial<CharityStats>> = {
   unicef: {
     name: "UNICEF",
-    totalReceived: "$40K",
-    organizations: ["UNICEF USA", "UNICEF International"],
     fullDescription:
       "UNICEF, the United Nations Children's Fund, works in the world's toughest places. United Nations agency working in over 190 countries to protect children's rights and wellbeing.",
     image: "/images/UNICEFBG.jpg",
-    profile_image: "/images/UNICEF.png",
+    logo: "/images/UNICEF.png",
     established: "1946",
     category: "Children & Education",
     location: "Global",
-    donors: 20,
-    avgGift: 35,
-    donationHistory: [
-      { donor: "Emily Chen", amount: 200, date: "2024-04-05" },
-      { donor: "John Smith", amount: 200, date: "2024-02-20" },
-      { donor: "Jane Doe", amount: 100, date: "2023-12-15" },
-
-    ],
   },
-
   "red-cross": {
     name: "Red Cross",
-    totalReceived: "$75K",
-    organizations: ["American Red Cross", "International Red Cross"],
     fullDescription:
       "The Red Cross, part of the global Red Cross and Red Crescent network, provides humanitarian aid. We are an International humanitarian movement providing emergency assistance, disaster relief, and health education.",
     image: "/images/RCbg1.jpg",
-    profile_image: "/images/RC.jpg",
+    logo: "/images/RC.jpg",
     established: "1863",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 20,
-    avgGift: 25,
-    donationHistory: [
-      { donor: "Michael Lee", amount: 75, date: "2023-11-10" },
-      { donor: "Sarah Park", amount: 25, date: "2024-01-08" },
-    ],
   },
   "doctors-without-borders-(msf)": {
     name: "Doctors Without Borders (MSF)",
-    totalReceived: "$50K",
-    organizations: ["MSF USA", "MSF International"],
     fullDescription:
       "Doctors Without Borders/Médecins Sans Frontières (MSF) is an international, independent organization who delivers emergency aid at all crisis.",
     image: "/images/MSFB.avif",
-    profile_image: "/images/MSF.png",
+    logo: "/images/MSF.png",
     established: "1971",
-    category: "Humanitarian Aid",
+    category: "Healthcare",
     location: "Global",
-    donors: 20,
-    avgGift: 15,
-    donationHistory: [
-      { donor: "Sheena Parky", amount: 150, date: "2024-01-20" },
-      { donor: "Meisha Tiangco", amount: 50, date: "2024-01-08" },
-      { donor: "Michael Lyson", amount: 250, date: "2023-11-10" },
-    ],
   },
   "world-wildlife-fund-(wwf)": {
     name: "World Wildlife Fund (WWF)",
-    totalReceived: "$45K",
-    organizations: ["MWWF US", "WWF International"],
     fullDescription:
       "Global nonprofit working to conserve nature and reduce the most pressing threats to biodiversity.",
     image: "/images/WWFBG.jpg",
-    profile_image: "/images/WWF.jpg",
+    logo: "/images/WWF.jpg",
     established: "1961",
-    category: "Nature & WildLife Resources",
+    category: "Nature & Wildlife",
     location: "Global",
-    donors: 20,
-    avgGift: 20,
-    donationHistory: [
-      { donor: "Lyra Patinson", amount: 75, date: "2024-01-08" },
-      { donor: "Mista Mone", amount: 75, date: "2023-11-10" },
-    ],
   },
   "salvation-army": {
     name: "Salvation Army",
-    totalReceived: "$40K",
-    organizations: ["The Salvation Army USA", "The Salvation Army International"],
     fullDescription:
       "International charitable organization providing relief, rehabilitation, and community support.",
     image: "/images/SABG.jpg",
-    profile_image: "/images/SA.jpg",
+    logo: "/images/SA.jpg",
     established: "1865",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 20,
-    avgGift: 15,
-    donationHistory: [
-      { donor: "Michael Rey", amount: 110, date: "2025-1-10" },
-      { donor: "Mint Park", amount: 40, date: "2024-01-08" },
-      { donor: "Michael Jhonson", amount: 60, date: "2023-11-10" }
-    ],
   },
   oxfam: {
     name: "Oxfam",
-    totalReceived: "$60K",
-    organizations: ["Oxfam America", "Oxfam International"],
     fullDescription:
       "Global movement to end the injustice of poverty through humanitarian aid, advocacy, and development.",
     image: "/images/OXFBG.jpg",
-    profile_image: "/images/OXF.png",
+    logo: "/images/OXF.png",
     established: "1942",
     category: "Humanitarian Aid",
     location: "Global",
-    donors: 25,
-    avgGift: 2,
-    donationHistory: [
-      { donor: "Sarah Lee", amount: 300, date: "2024-01-08" },
-      { donor: "Michael Kim", amount: 102, date: "2023-11-10" }
-    ],
   },
 };
 
+// orgs mapping
+const charityOrganizationsData: Record<string, string[]> = {
+  "UNICEF": ["UNICEF USA", "UNICEF International"],
+  "Red Cross": ["American Red Cross", "International Red Cross"],
+  "Doctors Without Borders (MSF)": ["MSF USA", "MSF International"],
+  "World Wildlife Fund (WWF)": ["WWF-US", "WWF International"],
+  "Salvation Army": ["The Salvation Army USA", "The Salvation Army International"],
+  "Oxfam": ["Oxfam America", "Oxfam International"],
+};
+
 interface PageProps {
-  params: Promise<{ name: string }>;
-  // params: { name: string };
+  params: Promise<{ name: string; organizations?: string }>;
+  onDonateClick?: () => void;
+  setIsModalOpen?: (isOpen: boolean) => void;
+  isLoggedIn?: boolean;
 }
 
-export default function CharityPage({ params }: PageProps) {
-  const { name } = use(params); // ✅ unwrap with React.use()
-  const key = name.toLowerCase() as keyof typeof charitiesData;
-  const charity = charitiesData[key];
+export default function CharityPage({ 
+  params, 
+  onDonateClick, 
+  setIsModalOpen, 
+  isLoggedIn = false 
+}: PageProps) {
+  const { name } = use(params);
   const router = useRouter();
+  const [charity, setCharity] = useState<CharityStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
 
-  if (!charity) {
+  const key = name.toLowerCase() as keyof typeof staticCharityData;
+  const staticData = staticCharityData[key];
+
+  const handleDonateClick = () => {
+    if (onDonateClick) {
+      onDonateClick();
+    } else if (!isLoggedIn && setIsModalOpen) {
+      setIsModalOpen(true);
+    } else {
+      setIsDonationModalOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!staticData) {
+      setLoading(false);
+      return;
+    }
+
+    const loadCharityData = () => {
+      try {
+        // Load donations from localStorage
+        const donationsData = localStorage.getItem("donations");
+        let allDonations: Donation[] = [];
+
+        if (donationsData) {
+          allDonations = JSON.parse(donationsData);
+        }
+
+        // filter donations
+        const charityDonations = allDonations.filter(
+          (donation) => donation.charity === staticData.name
+        );
+
+        // cal stats
+        const totalReceived = charityDonations.reduce(
+          (sum, donation) => sum + donation.amount,
+          0
+        );
+
+        // get unique donors (email addresses)
+        const uniqueDonors = new Set(charityDonations.map(d => d.email));
+        const donorCount = uniqueDonors.size;
+
+        // cal average gift
+        const avgGift = donorCount > 0 ? Math.round(totalReceived / donorCount) : 0;
+
+        // get orgs for this charity
+        const organizations = charityOrganizationsData[staticData.name!] || [];
+
+        // format donation history
+        const donationHistory = charityDonations
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 5) 
+          .map(donation => ({
+            ...donation,
+            donor: donation.anonymous ? "Anonymous Donor" : `Donor ${donation.email.split('@')[0]}`
+          }));
+
+        // combines static and dynamic data
+        const charityData: CharityStats = {
+          name: staticData.name!,
+          totalReceived,
+          organizations,
+          fullDescription: staticData.fullDescription!,
+          image: staticData.image!,
+          logo: staticData.logo!,
+          established: staticData.established!,
+          category: staticData.category!,
+          location: staticData.location!,
+          donors: donorCount,
+          avgGift,
+          donationHistory,
+        };
+
+        setCharity(charityData);
+      } catch (error) {
+        console.error("Error loading charity data:", error);
+        // fallbacks
+        if (staticData) {
+          setCharity({
+            name: staticData.name!,
+            totalReceived: 0,
+            organizations: charityOrganizationsData[staticData.name!] || [],
+            fullDescription: staticData.fullDescription!,
+            image: staticData.image!,
+            logo: staticData.logo!,
+            established: staticData.established!,
+            category: staticData.category!,
+            location: staticData.location!,
+            donors: 0,
+            avgGift: 0,
+            donationHistory: [],
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCharityData();
+
+    // listens for donation updates from local storage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "donations") {
+        loadCharityData();
+      }
+    };
+
+    const handleDonationAdded = () => {
+      loadCharityData();
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener("storage", handleStorageChange);
+      window.addEventListener("donationAdded", handleDonationAdded);
+
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+        window.removeEventListener("donationAdded", handleDonationAdded);
+      };
+    }
+  }, [staticData]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading charity profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!charity || !staticData) {
     return notFound();
   }
 
   const handleBack = () => {
-    if (window.history.length > 1) {
-      router.back(); // go to previous page
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
     } else {
-      router.push("/loggedin"); // fallback route
+      router.push("/loggedin");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
-      {/* Header */}
+      {/* header */}
       <header className="bg-white shadow-sm py-4 px-8 border-b border-gray-200">
         <div className="container mx-auto flex items-center">
           <button
             onClick={handleBack}
-            className="text-grey-600 font-medium hover:text-purple-600 flex items-center gap-1"
+            className="text-gray-600 font-medium hover:text-purple-600 flex items-center gap-1"
           >
             &larr; Back
           </button>
-         <span className="bg-gradient-to-br from-purple-500 to-pink-600 bg-clip-text text-transparent text-xl font-bold ml-auto">
-  CharityFlow
-</span>
-          {/* <span className="ml-auto text-xl font-bold">{charity.name}</span> */}
+          <span className="bg-gradient-to-br from-purple-500 to-pink-600 bg-clip-text text-transparent text-xl font-bold ml-auto">
+            CharityFlow
+          </span>
         </div>
       </header>
 
       <div className="relative w-full">
-        {/* Banner */}
+        {/* banner */}
         <div className="relative w-full h-96">
           <Image
             src={charity.image}
@@ -200,11 +307,11 @@ export default function CharityPage({ params }: PageProps) {
           />
         </div>
 
-        {/* Profile header */}
-        <div className="absolute bottom-5  w-full">
-          <div className="container mx-auto -mt-12  pl-15 px-8 flex items-center">
+        {/* profile header */}
+        <div className="absolute bottom-5 w-full">
+          <div className="container mx-auto -mt-12 pl-15 px-8 flex items-center">
             <Image
-              src={charity.profile_image}
+              src={charity.logo}
               alt={`${charity.name} logo`}
               width={112}
               height={112}
@@ -221,8 +328,7 @@ export default function CharityPage({ params }: PageProps) {
                   <MapPinIcon className="h-4 w-4" /> {charity.location}
                 </span>
                 <span className="flex items-center gap-1">
-                  <CalendarIcon className="h-4 w-4" /> Est.{" "}
-                  {charity.established}
+                  <CalendarIcon className="h-4 w-4" /> Est. {charity.established}
                 </span>
               </div>
             </div>
@@ -230,45 +336,48 @@ export default function CharityPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* main */}
       <main className="container mx-auto py-12 px-8">
-        {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-10"> */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Mission / About */}
+          {/* mission / about */}
           <div className="lg:col-span-2 bg-white rounded-2xl shadow p-8">
             <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
             <p className="text-gray-700 leading-relaxed">
               {charity.fullDescription}
             </p>
 
-            {/* Other Organizations */}
+            {/* orgs */}
             <div className="mt-8">
-              <h3 className="text-xl font-bold mb-3">Other Organizations</h3>
-              <ul className="list-disc list-inside text-gray-700">
-                {charity.organizations.map((org, index) => (
-                  <li key={index}>{org}</li>
-                ))}
-              </ul>
+              <h3 className="text-xl font-bold mb-3">Partner Organizations</h3>
+              {charity.organizations.length > 0 ? (
+                <ul className="list-disc list-inside text-gray-700">
+                  {charity.organizations.map((org, index) => (
+                    <li key={index}>{org}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 italic">No partner organizations listed</p>
+              )}
             </div>
           </div>
 
-          {/* Stats */}
+          {/* stats */}
           <div className="bg-white rounded-2xl shadow p-8">
             <h2 className="text-xl font-bold mb-6 text-center">
               Donation Impact
             </h2>
             <div className="text-center mb-6">
               <p className="text-4xl font-bold text-green-600">
-                {charity.totalReceived.toLocaleString()}
+                ${charity.totalReceived.toLocaleString()}
               </p>
               <p className="text-gray-500">Total Raised</p>
             </div>
 
-            {/* Donors & Avg Gift */}
-            <div className="flex gap-30 justify-center text-gray-600 mb-6">
+            {/* donors & avg gift */}
+            <div className="flex gap-8 justify-center text-gray-600 mb-6">
               <div className="text-center">
                 <p className="text-2xl font-extrabold text-purple-600">
-                  {charity.donors}K
+                  {charity.donors}
                 </p>
                 <p className="text-sm">Donors</p>
               </div>
@@ -280,8 +389,11 @@ export default function CharityPage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="ml-auto text-center">
-              <button className="bg-gradient-to-r cursor-pointer from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition">
+            <div className="text-center">
+              <button 
+                onClick={handleDonateClick}
+                className="bg-gradient-to-r cursor-pointer from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full shadow hover:from-purple-700 hover:to-pink-700 transition"
+              >
                 Donate Now
               </button>
             </div>
@@ -289,28 +401,39 @@ export default function CharityPage({ params }: PageProps) {
         </div>
 
         <div className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Donation History */}
+          {/* donation history */}
           <div className="md:col-span-2 bg-white rounded-2xl shadow-md p-6">
             <h2 className="text-xl font-bold mb-4">Recent Donations</h2>
-            <ul className="divide-y divide-gray-200">
-              {charity.donationHistory.map((donation, index) => (
-                <li
-                  key={index}
-                  className="py-4 flex justify-between items-center "
-                >
-                  <div>
-                    <p className="font-medium">{donation.donor}</p>
-                    <p className="text-sm text-gray-500">{donation.date}</p>
-                  </div>
-                  <p className="text-purple-600 font-bold">
-                    ${donation.amount}
-                  </p>
-                </li>
-              ))}
-            </ul>
+            {charity.donationHistory.length > 0 ? (
+              <ul className="divide-y divide-gray-200">
+                {charity.donationHistory.map((donation, index) => (
+                  <li
+                    key={index}
+                    className="py-4 flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-medium">{donation.donor}</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(donation.date).toLocaleDateString()}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        to {donation.organization}
+                      </p>
+                    </div>
+                    <p className="text-purple-600 font-bold">
+                      ${donation.amount}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500 text-center py-8">
+                No donations yet. Be the first to donate!
+              </p>
+            )}
           </div>
 
-          {/* Quick Info */}
+          {/* info */}
           <div className="bg-white rounded-2xl shadow-md p-6">
             <h2 className="text-xl font-bold mb-4">Quick Info</h2>
             <ul className="space-y-4 text-sm text-gray-600">
@@ -341,13 +464,23 @@ export default function CharityPage({ params }: PageProps) {
                   <span className="font-medium">Total Raised</span>
                 </div>
                 <span className="text-green-600 font-bold">
-                  {charity.totalReceived}
+                  ${charity.totalReceived.toLocaleString()}
                 </span>
               </li>
             </ul>
           </div>
         </div>
       </main>
+
+      {/* donation modal */}
+      {isDonationModalOpen && (
+        <DonationModal
+          isOpen={isDonationModalOpen}
+          onClose={() => setIsDonationModalOpen(false)}
+          charityName={charity.name}
+          organizations={charity.organizations}
+        />
+      )}
     </div>
   );
 }
