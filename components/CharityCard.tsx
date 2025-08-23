@@ -162,7 +162,7 @@ const CharityCard: React.FC<CharityCardProps> = ({
             </Link>
             <button
               onClick={handleDonateClick}
-              className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2"
+              className="cursor-pointer bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2"
             >
               <HeartIcon className="h-4 w-4" />
               <span className="text-sm">Donate</span>

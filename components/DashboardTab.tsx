@@ -569,7 +569,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
           <div className="flex space-x-4 text-sm">
             <button
               onClick={() => setActiveTab('history')}
-              className={`font-medium pb-1 transition-colors ${activeTab === 'history'
+              className={`font-medium pb-1 transition-colors cursor-pointer ${activeTab === 'history'
                 ? 'text-blue-600 border-b-2 border-blue-600'
                 : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -578,7 +578,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             </button>
             <button
               onClick={() => setActiveTab('statistics')}
-              className={`font-medium pb-1 transition-colors ${activeTab === 'statistics'
+              className={`font-medium pb-1 transition-colors cursor-pointer ${activeTab === 'statistics'
                 ? 'text-blue-600 border-b-2 border-blue-600'
                 : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -587,7 +587,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({ userEmail }) => {
             </button>
             <button
               onClick={() => setActiveTab('impact')}
-              className={`font-medium pb-1 transition-colors ${activeTab === 'impact'
+              className={`font-medium pb-1 transition-colors cursor-pointer ${activeTab === 'impact'
                 ? 'text-blue-600 border-b-2 border-blue-600'
                 : 'text-gray-500 hover:text-gray-700'
                 }`}

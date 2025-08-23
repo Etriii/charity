@@ -197,7 +197,7 @@ const HomePage: React.FC<HomePageProps> = ({
         <div className="flex justify-center space-x-4">
           <button
             onClick={handleDonateClick}
-            className="bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold py-4 px-12 rounded-lg text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
+            className="cursor-pointer bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold py-4 px-12 rounded-lg text-lg shadow-lg hover:bg-blue-700 transition-colors duration-300"
           >
             {isLoggedIn ? "Make a Donation" : "Start Donating"}
           </button>

@@ -74,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="cursor-pointer shadow-lg border border-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              <div className="size-9 bg-gradient-to-br from-violet-600 to-blue-600 rounded-full flex items-center justify-center relative">
+              <div className="size-9 bg-gradient-to-br from-purple-600 to-pink-600  rounded-full flex items-center justify-center relative">
                 <UserIcon className="size-6 text-white" />
                 <ChevronDownIcon
                   className={`absolute rounded-full bg-white bottom-[-2px] right-[-2px] p-[.8px] size-[14px] text-gray-600 border border-gray-600 font-bold transition-transform duration-200 ${

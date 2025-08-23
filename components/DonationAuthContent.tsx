@@ -278,7 +278,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                 </button>
                 <button
                   onClick={() => setActiveTab('register')}
-                  className={`py-2 px-4 rounded-full  transition-colors duration-200 flex items-center justify-center ${activeTab === 'register' ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`py-2 px-4 rounded-full  transition-colors duration-200 flex items-center justify-center ${activeTab === 'register' ? 'bg-gradient-to-br from-purple-600 to-pink-600  text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   <UserPlusIconComponent />
                   <span className="ml-2 text-nowrap">Create Account</span>
@@ -330,7 +330,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                     <div className="pt-4">
                       <button
                         onClick={handleLogin}
-                        className="w-full bg-gradient-to-br from-purple-600 to-pink-600 hover:bg-blue-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
+                        className="w-full cursor-pointer bg-gradient-to-br from-purple-600 to-pink-600 hover:bg-blue-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
                         disabled={loginLoading || !loginEmail.trim() || !loginPassword.trim()}
                       >
                         <LogInIcon />
@@ -431,7 +431,7 @@ const DonationAuthContent: React.FC<DonationAuthContentProps> = ({ onClose, onLo
                     <div className="pt-4">
                       <button
                         onClick={handleRegister}
-                        className="w-full bg-gradient-to-br from-purple-600 to-indigo-600 hover:bg-green-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
+                        className="cursor-pointer w-full bg-gradient-to-br from-purple-600 to-pink-600  hover:bg-green-700 text-white flex items-center justify-center space-x-2 rounded-full py-3 px-4 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
                         disabled={registerLoading || !registerUsername.trim() || !registerEmail.trim() || !registerPassword.trim() || !confirmPassword.trim()}
                       >
                         <UserPlusIconComponent />
